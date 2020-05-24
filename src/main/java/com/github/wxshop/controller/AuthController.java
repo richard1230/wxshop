@@ -1,4 +1,4 @@
-package com.github.wxshop;
+package com.github.wxshop.controller;
 
 import com.github.wxshop.entity.LoginResponse;
 import com.github.wxshop.service.AuthService;
@@ -61,6 +61,8 @@ public class AuthController {
         }else {
             return LoginResponse.login(UserContext.getCurrentUser());
         }
+//        User user = UserContext.getCurrentUser();
+//        return user == null ? new HashMap<>() : user;
     }
 
     public static class TelAndCode{

@@ -47,14 +47,15 @@ public class AuthIntegrationTest {
 
     private HttpResponse doHttpRequest(String apiName, boolean isGet, Object requestBody, String cookie) throws JsonProcessingException {
         HttpRequest request = isGet ? HttpRequest.get(getUrl(apiName)) : HttpRequest.post(getUrl(apiName));
-        request.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE);
-
         if (cookie != null) {
             request.header("Cookie", cookie);
         }
+        request.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE);
+
         if (requestBody != null) {
             request.send(objectMapper.writeValueAsString(requestBody));
         }
+
         return new HttpResponse(request.code(), request.body(), request.headers());
     }
 
@@ -132,5 +133,4 @@ public class AuthIntegrationTest {
         // 获取集成测试的端口号
         return "http://localhost:" + environment.getProperty("local.server.port") + apiName;
     }
-
 }

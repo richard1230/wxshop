@@ -1,10 +1,12 @@
 package com.github.wxshop.service;
 
-        import com.github.wxshop.UserDao;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.stereotype.Service;
+import com.github.wxshop.dao.UserDao;
+import com.github.wxshop.generate.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-        import java.util.Date;
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,19 +28,12 @@ public class UserService {
             userDao.insertUser(user);
         } catch (Exception e) {
             return userDao.getUserByTel(tel);
-//            e.printStackTrace();
         }
         return user;
-
-
     }
 
-    /**
-     *
-     * @param tel
-     * @return User
-     */
-    public User getUserByTel(String tel) {
-        return userDao.getUserByTel(tel);
+
+    public Optional<User> getUserByTel(String tel) {
+        return Optional.ofNullable(userDao.getUserByTel(tel));
     }
 }

@@ -1,14 +1,12 @@
 package com.github.wxshop.service;
 
-import com.github.wxshop.AuthController;
+import com.github.wxshop.controller.AuthController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 
 class TelVerificationServiceTest {
     static AuthController.TelAndCode VALID_PARAMTER = new AuthController.TelAndCode("138123456789", null);
     static AuthController.TelAndCode VALID_PARAMTER_CODE = new AuthController.TelAndCode("138123456789", "000000");
-
     static AuthController.TelAndCode EMPTY_TEL = new AuthController.TelAndCode(null, null);
 
     @Test
@@ -20,6 +18,5 @@ class TelVerificationServiceTest {
     public void returnFalseIfNoTel(){
         Assertions.assertFalse(new TelVerificationService().verifyTelParameter(EMPTY_TEL));
         Assertions.assertFalse(new TelVerificationService().verifyTelParameter(null));
-
     }
 }
