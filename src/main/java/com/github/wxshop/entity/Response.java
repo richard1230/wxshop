@@ -12,6 +12,9 @@ public class Response<T> { //这里建议写成泛型的,因为后面还有不�
         return new Response<T>(null, data);
     }
 
+    public Response() {
+    }
+
     public Response(String message, T data) {
         this.data = data;
         this.message = message;
@@ -19,5 +22,9 @@ public class Response<T> { //这里建议写成泛型的,因为后面还有不�
 
     public T getData() {
         return data;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

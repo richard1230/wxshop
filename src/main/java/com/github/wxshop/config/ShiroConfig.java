@@ -56,10 +56,10 @@ public class ShiroConfig implements WebMvcConfigurer {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         Map<String, String> pattern = new HashMap<>();
-        pattern.put("/api/code", "anon");       //如果用户未登录,除了这四个接口,访问其他接口都会返回404
-        pattern.put("/api/login", "anon");      //这里为匿名接口,不需要过滤器
-        pattern.put("api/status", "anon");
-        pattern.put("api/logout", "anon");
+        pattern.put("/api/v1/code", "anon");       //如果用户未登录,除了这四个接口,访问其他接口都会返回404
+        pattern.put("/api/v1/login", "anon");      //这里为匿名接口,不需要过滤器
+        pattern.put("/api/v1/status", "anon");
+        pattern.put("/api/v1/logout", "anon");
         pattern.put("/**", "authc");          //非匿名接口需要进入过滤器shiroLoginFilter,没有登录会被拒绝
 
         Map<String, Filter> filtersMap = new LinkedHashMap<>();
