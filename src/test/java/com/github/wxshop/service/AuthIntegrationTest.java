@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.github.wxshop.service.TelVerificationServiceTest.VALID_PARAMTER;
@@ -25,7 +24,7 @@ public class  AuthIntegrationTest extends AbstractIntegrationTest {
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
 
-        String sessionId = loginAndGetCookie();
+        String sessionId = loginAndGetCookie().cookie;
 
         //4.带着cookie访问,/api/v1/status处于登陆状态
         String statusResponse = doHttpRequest("/api/v1/status", "GET", null, sessionId).body;

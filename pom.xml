@@ -115,9 +115,9 @@
                         <version>1.0.4</version>
                     </dependency>
                 </dependencies>
-<!--                <configuration>-->
-<!--                    <overwrite>true</overwrite>-->
-<!--                </configuration>-->
+                <configuration>
+                    <overwrite>true</overwrite>
+                </configuration>
             </plugin>
 
             <plugin>

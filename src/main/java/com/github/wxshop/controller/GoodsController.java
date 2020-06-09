@@ -1,6 +1,7 @@
 package com.github.wxshop.controller;
 
-import com.github.wxshop.dao.GoodsDao;
+import com.github.wxshop.entity.HttpException;
+import com.github.wxshop.entity.PageResponse;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.generate.Goods;
 import com.github.wxshop.service.GoodsService;
@@ -23,6 +24,10 @@ public class GoodsController {
     // @formatter:off
 
     /**
+     * @param pageNum
+     * @param pageSize
+     * @param shopId
+     * @return PageResponse<Goods>
      * @api {get} /goods 获取所有商品
      * @apiName GetGoods
      * @apiGroup 商品
@@ -66,12 +71,20 @@ public class GoodsController {
      * }
      */
     // @formatter:on
-    public void getGoods() {
+    @GetMapping("/goods")
+    public @ResponseBody
+    PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                                 @RequestParam("pageSize") Integer pageSize,
+                                 @RequestParam(value = "shopId", required = false) Integer shopId) {
+        return goodsService.getGoods(pageNum, pageSize, shopId);
     }
 
     // @formatter:off
 
     /**
+     * @param goods
+     * @param response
+     * @return Response<Goods>
      * @api {post} /goods 创建商品
      * @apiName CreateGoods
      * @apiGroup 商品
@@ -109,9 +122,6 @@ public class GoodsController {
      * {
      * "message": "Unauthorized"
      * }
-     * @param goods
-     * @param response
-     * @return Response<Goods>
      */
     // @formatter:on
     @PostMapping("/goods")
@@ -120,8 +130,8 @@ public class GoodsController {
         response.setStatus(HttpServletResponse.SC_CREATED);
         try {
             return Response.of(goodsService.createGoods(goods));
-        } catch (GoodsService.NotAuthorizedForShopException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
@@ -172,14 +182,26 @@ public class GoodsController {
      * {
      * "message": "Unauthorized"
      * }
+     * @param goods
+     * @param response
+     * @return Response<Goods>
      */
     // @formatter:on
-    public void updateGoods() {
+    public Response<Goods> updateGoods(Goods goods, HttpServletResponse response) {
+        try {
+            return Response.of(goodsService.updateGoods(goods));
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
+            return Response.of(e.getMessage(), null);
+        }
     }
 
     // @formatter:off
 
     /**
+     * @param goodsId
+     * @param response
+     * @return Response<Goods>
      * @api {delete} /goods/:id 删除商品
      * @apiName DeleteGoods
      * @apiGroup 商品
@@ -208,21 +230,15 @@ public class GoodsController {
      * {
      * "message": "Unauthorized"
      * }
-     * @param goodsid
-     * @param response
-     * @return Response<Goods>
      */
     // @formatter:on
     @DeleteMapping("/goods/{id}")
-    public Response<Goods> deleteGoods(@PathVariable("id") Long goodsid, HttpServletResponse response) {
+    public Response<Goods> deleteGoods(@PathVariable("id") Long goodsId, HttpServletResponse response) {
         try {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            return Response.of(goodsService.deleteGoodsById(goodsid));
-        } catch (GoodsService.NotAuthorizedForShopException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        } catch (GoodsDao.ResourceNotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return Response.of(goodsService.deleteGoodsById(goodsId));
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
