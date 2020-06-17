@@ -2,6 +2,7 @@ package com.github.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.wxshop.entity.LoginResponse;
 import com.github.wxshop.generate.User;
@@ -42,11 +43,9 @@ public class AbstractIntegrationTest {
         flyway.migrate();
     }
 
-    public ObjectMapper objectMapper = new ObjectMapper();
+    public static ObjectMapper objectMapper = new ObjectMapper();
 
-//    {
-//        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-//    }
+
 
     public String getUrl(String apiName) {
         //获取集成测试的端口号
@@ -102,7 +101,14 @@ public class AbstractIntegrationTest {
             this.body = body;
             this.headers = headers;
         }
+
+        public <T> T asJsonObject(TypeReference<T> typeReference) throws JsonProcessingException {
+            T result = objectMapper.readValue(body, typeReference);
+            return result;
+        }
     }
+
+
 
      HttpResponse doHttpRequest(String apiName, String httpMethod, Object requestBody, String cookie) throws JsonProcessingException {
         HttpRequest request = new HttpRequest(getUrl(apiName), httpMethod);

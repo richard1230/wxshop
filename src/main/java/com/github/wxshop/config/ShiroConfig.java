@@ -1,6 +1,5 @@
 package com.github.wxshop.config;
 
-
 import com.github.wxshop.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;

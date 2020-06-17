@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import org.springframework.test.context.TestPropertySource;
 import static com.github.wxshop.service.TelVerificationServiceTest.VALID_PARAMTER;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -18,7 +18,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 @ExtendWith(SpringExtension.class)//SpringExtension:spring为junit5提供的插件,你可以在这个测试里面使用spring相关的功能,包括依赖注入
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //选择随机端口(原来的8080端口可能被占或者需要测并发时候的情况),端口可以在下面的environment中找到
-//@TestPropertySource(locations = "classpath:test.yml")
+@TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
 public class  AuthIntegrationTest extends AbstractIntegrationTest {
 
     @Test
