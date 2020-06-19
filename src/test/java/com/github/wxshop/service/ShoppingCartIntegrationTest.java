@@ -3,18 +3,21 @@ package com.github.wxshop.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.wxshop.WxshopApplication;
+import com.github.wxshop.controller.ShoppingCartController;
 import com.github.wxshop.entity.PageResponse;
+import com.github.wxshop.entity.Response;
 import com.github.wxshop.entity.ShoppingCartData;
 import com.github.wxshop.entity.ShoppingCartGoods;
 import com.github.wxshop.generate.Goods;
+import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
@@ -26,12 +29,10 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
     public void canQueryShoppingCartData() throws JsonProcessingException {
         //执行一个登陆操作
         UserLoginResponse loginResponse = loginAndGetCookie();
-
         //第二页,每页大小为1
         PageResponse<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart?pageNum=2&pageSize=1",
                 "GET", null, loginResponse.cookie).asJsonObject(new TypeReference<PageResponse<ShoppingCartData>>() {
         });
-
         Assertions.assertEquals(2, response.getPageNum());
         Assertions.assertEquals(1, response.getPageSize());
         Assertions.assertEquals(2, response.getTotalPage());
@@ -50,6 +51,38 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
         Assertions.assertEquals(Arrays.asList(200, 300),
                 response.getData().get(0).getGoods().stream()
                         .map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
+    }
 
+    @Test
+    public void canAddShoppingCartData() throws Exception {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+
+        //post的是AddToShoppingCartRequest这个请求
+        ShoppingCartController.AddToShoppingCartRequest request = new ShoppingCartController.AddToShoppingCartRequest();
+        ShoppingCartController.AddToShoppingCartItem item = new ShoppingCartController.AddToShoppingCartItem();
+        //设置所加商品的id
+        item.setId(2L);
+        //设置这个商品的数量
+        item.setNumber(2);
+
+        request.setGoods(Collections.singletonList(item));
+
+        //这里的接口是post请求
+        Response<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart",
+                "POST", request, loginResponse.cookie).asJsonObject(new TypeReference<Response<ShoppingCartData>>() {
+        });
+
+        //返回的是一号店铺
+        Assertions.assertEquals(1L, response.getData().getShop().getId());
+        //一号商店的一号商品和二号商品
+        Assertions.assertEquals(Arrays.asList(1L, 2L),
+                response.getData().getGoods().stream().map(Goods::getId).collect(Collectors.toList()));
+        //预期商品数量为2件(上面设置的)和100件(见V5__AddShopIdToShoppingCart这个表单里面的一号店铺)
+        Assertions.assertEquals(Sets.newHashSet(2, 100),
+                response.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toSet()));
+        //店铺id是不是1
+        Assertions.assertTrue(response.getData().getGoods().stream().allMatch(
+                goods -> goods.getShopId() == 1L
+        ));
     }
 }
