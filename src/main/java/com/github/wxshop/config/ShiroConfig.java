@@ -1,6 +1,9 @@
 package com.github.wxshop.config;
 
-import com.github.wxshop.service.*;
+import com.github.wxshop.service.ShiroRealm;
+import com.github.wxshop.service.UserContext;
+import com.github.wxshop.service.UserService;
+import com.github.wxshop.service.VerificationCodeCheckService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
@@ -15,12 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
@@ -36,8 +36,18 @@ public class ShiroConfig implements WebMvcConfigurer {
                 Object tel = SecurityUtils.getSubject().getPrincipal();
                 if (tel != null) {
                     userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
+                    return true;
+                } else if (Arrays.asList(
+                        "/api/v1/code",
+                        "/api/v1/login",
+                        "/api/v1/status",
+                        "/api/v1/logout"
+                ).contains(request.getRequestURI())) {
+                    return true;
+                } else {
+                    response.setStatus(401);
+                    return false;
                 }
-                return true;
             }
 
             @Override
@@ -50,23 +60,9 @@ public class ShiroConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, ShiroLoginFilter shiroLoginFilter) {//这里爆红是因为这里是注入,这种行为是运行时行为 ,IDEA对于这种检测不是100%准确
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {//这里爆红是因为这里是注入,这种行为是运行时行为 ,IDEA对于这种检测不是100%准确
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-
-        Map<String, String> pattern = new HashMap<>();
-        pattern.put("/api/v1/code", "anon");       //如果用户未登录,除了这四个接口,访问其他接口都会返回404
-        pattern.put("/api/v1/login", "anon");      //这里为匿名接口,不需要过滤器
-        pattern.put("/api/v1/status", "anon");
-        pattern.put("/api/v1/logout", "anon");
-        pattern.put("/**", "authc");          //非匿名接口需要进入过滤器shiroLoginFilter,没有登录会被拒绝
-
-        Map<String, Filter> filtersMap = new LinkedHashMap<>();
-        filtersMap.put("shiroLoginFilter", shiroLoginFilter);
-        shiroFilterFactoryBean.setFilters(filtersMap);
-
-
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(pattern);
         return shiroFilterFactoryBean;
     }
 
