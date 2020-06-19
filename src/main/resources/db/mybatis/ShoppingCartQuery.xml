@@ -5,6 +5,7 @@
         SELECT COUNT(DISTINCT SHOPPING_CART.SHOP_ID)
         from SHOPPING_CART
         where USER_ID = #{userId}
+        AND STATUS = 'ok'
     </select>
     <select id="selectShoppingCartDataByUserId" resultMap="getShoppingCartResultMap" parameterType="Map">
         SELECT SHOP.ID              as SHOP_ID,
@@ -27,6 +28,7 @@
                  SELECT DISTINCT SHOP_ID
                  FROM SHOPPING_CART
                  WHERE USER_ID = #{userId}
+                    AND STATUS = 'ok'
                  LIMIT #{limit},#{offset}
              ) t1
                  JOIN SHOPPING_CART on t1.SHOP_ID = SHOPPING_CART.SHOP_ID
@@ -57,6 +59,8 @@
                  JOIN SHOP on SHOPPING_CART.SHOP_ID = SHOP.ID
         WHERE SHOPPING_CART.SHOP_ID = #{shopId}
           AND SHOPPING_CART.USER_ID = #{userId}
+                AND SHOPPING_CART.STATUS = 'ok'
+
     </select>
 
     <resultMap id="getShoppingCartResultMap" type="ShoppingCartData">
@@ -84,5 +88,12 @@
 
         </collection>
     </resultMap>
+
+    <delete id="deleteShoppingCart" parameterType="Map">
+        UPDATE SHOPPING_CART
+        SET STATUS = 'deleted', UPDATED_AT = now()
+        WHERE USER_ID = #{userId}
+          AND GOODS_ID = #{goodsId}
+    </delete>
 
 </mapper>
