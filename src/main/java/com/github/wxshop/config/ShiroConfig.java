@@ -44,6 +44,7 @@ public class ShiroConfig implements WebMvcConfigurer {
                 response.setHeader("Access-Control-Allow-Origin", "localhost:3000");
                 response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
                 response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+                response.setHeader("Access-Control-Allow-Credentials", "true");
 
                 Object tel = SecurityUtils.getSubject().getPrincipal();
                 if (tel != null) {
