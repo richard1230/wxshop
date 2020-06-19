@@ -40,6 +40,11 @@ public class ShiroConfig implements WebMvcConfigurer {
         registry.addInterceptor(new HandlerInterceptor() {
             @Override
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                //add cors headers
+                response.addHeader("Access-Control-Allow-Origin", "localhost:3000");
+                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS");
+                response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+
                 Object tel = SecurityUtils.getSubject().getPrincipal();
                 if (tel != null) {
                     userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
