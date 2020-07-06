@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: wxshop
   datasource:
     url: jdbc:mysql://localhost:3306/wxshop?useSSL=false&allowPublicKeyRetrieval=true
     username: root
@@ -11,3 +13,9 @@ wxshop:
   redis:
     host: 127.0.0.1
     port: 6379
+  orderservice:
+    version: 0.0.1
+
+dubbo:
+  registry:
+    address: zookeeper://127.0.0.1:2181
