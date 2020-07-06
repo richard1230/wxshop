@@ -1,9 +1,11 @@
 package com.github.wxshop.controller;
 
+import com.github.api.rpc.OrderService;
 import com.github.wxshop.entity.LoginResponse;
 import com.github.wxshop.service.AuthService;
 import com.github.wxshop.service.TelVerificationService;
 import com.github.wxshop.service.UserContext;
+import org.apache.dubbo.config.annotation.Reference;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +55,12 @@ public class AuthController {
         SecurityUtils.getSubject().logout();
     }
 
+    @Reference(version = "${wxshop.orderservice.version}")
+    OrderService orderService;
 
     @GetMapping("/status")
     public Object loginStatus(){
+        System.out.println(orderService.sayHello("aaaaa"));
         if (UserContext.getCurrentUser()==null){
             return LoginResponse.notLogin();
         }else {
