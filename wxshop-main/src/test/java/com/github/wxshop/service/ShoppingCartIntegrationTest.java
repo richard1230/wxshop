@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.wxshop.WxshopApplication;
 import com.github.wxshop.controller.ShoppingCartController;
+import com.github.api.DataStatus;
 import com.github.wxshop.entity.*;
+import com.github.wxshop.generate.Goods;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,11 +44,11 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
         //两件商品的价格是100和200
         Assertions.assertEquals(Arrays.asList(100L, 200L),
                 response.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getPrice).collect(Collectors.toList()));
+                        .map(GoodsWithNumber::getPrice).collect(Collectors.toList()));
         //两件商品的数量分别是200和300
         Assertions.assertEquals(Arrays.asList(200, 300),
                 response.getData().get(0).getGoods().stream()
-                        .map(ShoppingCartGoods::getNumber).collect(Collectors.toList()));
+                        .map(GoodsWithNumber::getNumber).collect(Collectors.toList()));
     }
 
     @Test
@@ -75,7 +77,7 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
                 response.getData().getGoods().stream().map(Goods::getId).collect(Collectors.toList()));
         //预期商品数量为2件(上面设置的)和100件(见V5__AddShopIdToShoppingCart这个表单里面的一号店铺)
         Assertions.assertEquals(Sets.newHashSet(2, 100),
-                response.getData().getGoods().stream().map(ShoppingCartGoods::getNumber).collect(Collectors.toSet()));
+                response.getData().getGoods().stream().map(GoodsWithNumber::getNumber).collect(Collectors.toSet()));
         //店铺id是不是1
         Assertions.assertTrue(response.getData().getGoods().stream().allMatch(
                 goods -> goods.getShopId() == 1L
@@ -93,7 +95,7 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
         Assertions.assertEquals(2L, response.getData().getShop().getId());
 
         Assertions.assertEquals(1, response.getData().getGoods().size());
-        ShoppingCartGoods goods = response.getData().getGoods().get(0);
+        GoodsWithNumber goods = response.getData().getGoods().get(0);
 
         Assertions.assertEquals(4L, goods.getId());
         Assertions.assertEquals(200, goods.getNumber());

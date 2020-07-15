@@ -1,5 +1,6 @@
 package com.github.wxshop.controller;
 
+import com.github.api.rpc.OrderRpcService;
 import com.github.wxshop.entity.LoginResponse;
 import com.github.wxshop.service.AuthService;
 import com.github.wxshop.service.TelVerificationService;
@@ -10,7 +11,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -55,18 +55,15 @@ public class AuthController {
     }
 
     @Reference(version = "${wxshop.orderservice.version}")
-    OrderService orderService;
+    OrderRpcService orderService;
 
     @GetMapping("/status")
     public Object loginStatus(){
-        System.out.println(orderService.sayHello("aaaaa"));
         if (UserContext.getCurrentUser()==null){
             return LoginResponse.notLogin();
         }else {
             return LoginResponse.login(UserContext.getCurrentUser());
         }
-//        User user = UserContext.getCurrentUser();
-//        return user == null ? new HashMap<>() : user;
     }
 
     public static class TelAndCode{

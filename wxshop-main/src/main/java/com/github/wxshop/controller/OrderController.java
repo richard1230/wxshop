@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/v1")
-public class  OrderController {
+public class OrderController {
     OrderService orderService; //它所对应的包在pom所指定的依赖里面
 
     @Autowired
@@ -33,14 +33,13 @@ public class  OrderController {
 
     @PostMapping("/order")
     public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo,
-                                               HttpServletResponse response )
-    {
-        try{
+                                               HttpServletResponse response) {
+        try {
             orderService.deductStock(orderInfo);
             return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
         } catch (HttpException e) {
             response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(),null);
+            return Response.of(e.getMessage(), null);
         }
     }
 

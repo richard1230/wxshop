@@ -13,11 +13,11 @@ import com.github.wxshop.generate.Goods;
 import com.github.wxshop.generate.ShopMapper;
 import com.github.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -55,10 +55,10 @@ public class OrderService {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
-    public OrderResponse createOrder(OrderInfo orderInfo, Long userId){
+    public OrderResponse createOrder(OrderInfo orderInfo, Long userId) {
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo);
-        Order createOrder = createOrderRpcViaRpc(orderInfo,userId,idToGoodsMap);
-        return generateResponse(createOrder,idToGoodsMap,orderInfo);
+        Order createOrder = createOrderRpcViaRpc(orderInfo, userId, idToGoodsMap);
+        return generateResponse(createOrder, idToGoodsMap, orderInfo);
     }
 
     private OrderResponse generateResponse(Order createOrder, Map<Long, Goods> idToGoodsMap, OrderInfo orderInfo) {
@@ -67,24 +67,22 @@ public class OrderService {
         response.setShop(shopMapper.selectByPrimaryKey(shopId));
         response.setGoods(
                 orderInfo.getGoods()
-                .stream()
-                .map(goods -> toGoodsWithNumber(goods,idToGoodsMap))
-                .collect(toList())
+                        .stream()
+                        .map(goods -> toGoodsWithNumber(goods, idToGoodsMap))
+                        .collect(toList())
 
         );
         return response;
     }
 
+    //Transactional两个坑:1.相对应方法为public
+    // 2.只能是别人调用deductstock这个方法,this调用不行!!
     @Transactional
     public void deductStock(OrderInfo orderInfo) {
         for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
             if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
                 LOGGER.error("扣减库存失败, 商品id: " + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
-                try {
-                    throw  HttpException.gone("扣减库存失败!");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    throw HttpException.gone("扣减库存失败!");
             }
         }
     }
@@ -109,9 +107,9 @@ public class OrderService {
     private Long calculateTotalPrice(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap) {
         long result = 0;
 
-        for (GoodsInfo goodsInfo : orderInfo.getGoods()){
+        for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
             Goods goods = idToGoodsMap.get(goodsInfo.getId());
-            if(goods == null){
+            if (goods == null) {
                 throw HttpException.badRequest("goods id非法：" + goodsInfo.getId());
             }
             if (goodsInfo.getNumber() <= 0) {

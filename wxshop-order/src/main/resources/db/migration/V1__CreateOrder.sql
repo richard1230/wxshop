@@ -2,7 +2,7 @@ CREATE TABLE `ORDER_TABLE`
 (
     ID              BIGINT PRIMARY KEY AUTO_INCREMENT,
     USER_ID         BIGINT,
-    TOTAL_PRICE     BIGINT,  -- 价格，单位分
+    TOTAL_PRICE     BIGINT,  -- 价格，这里的单位为分
     ADDRESS         VARCHAR(1024),
     EXPRESS_COMPANY VARCHAR(16),
     EXPRESS_ID      VARCHAR(128),

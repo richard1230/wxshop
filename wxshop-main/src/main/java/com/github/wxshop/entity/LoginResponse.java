@@ -1,5 +1,7 @@
 package com.github.wxshop.entity;
 
+import com.github.wxshop.generate.User;
+
 public class LoginResponse {
     private boolean login = false;
     private User user;
