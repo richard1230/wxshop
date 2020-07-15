@@ -4,7 +4,6 @@ package com.github.wxshop.controller;
 import com.github.wxshop.entity.HttpException;
 import com.github.wxshop.entity.PageResponse;
 import com.github.wxshop.entity.Response;
-import com.github.wxshop.generate.Shop;
 import com.github.wxshop.service.ShopService;
 import com.github.wxshop.service.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.wxshop.WxshopApplication;
 import com.github.wxshop.controller.ShoppingCartController;
 import com.github.wxshop.entity.*;
-import com.github.wxshop.generate.Goods;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

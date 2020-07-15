@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.wxshop.WxshopApplication;
 import com.github.wxshop.entity.Response;
-import com.github.wxshop.generate.Goods;
-import com.github.wxshop.generate.Shop;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

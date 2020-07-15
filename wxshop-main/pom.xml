@@ -12,7 +12,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>wxshop-main</name>
     <description>wxshop-main</description>
-
     <dependencies>
         <dependency>
             <groupId>com.github</groupId>
@@ -46,7 +45,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.2</version>
+<!--            <version>2.1.2</version>-->
         </dependency>
 
         <dependency>

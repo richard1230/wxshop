@@ -17,20 +17,20 @@
                         password="root">
         </jdbcConnection>
 
-<!--        <javaTypeResolver >-->
-<!--            <property name="forceBigDecimals" value="false" />-->
-<!--        </javaTypeResolver>-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.github.wxshop.generate" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.github.wxshop.generate" targetProject="wxshop-main/src/main/java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="wxshop-main/src/main/resources">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.wxshop.generate"  targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.github.wxshop.generate"  targetProject="wxshop-main/src/main/java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
