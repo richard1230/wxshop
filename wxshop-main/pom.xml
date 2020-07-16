@@ -221,9 +221,9 @@
                     </execution>
                     <execution>
                         <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
                         <configuration>
                             <rules>
                                 <rule>
@@ -232,12 +232,15 @@
                                         <limit>
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--											//这里表示测试覆盖率-->
                                             <minimum>0.60</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
                             </rules>
+<!--                            <excludes>-->
+<!--                                &lt;!&ndash; Exclude class from test coverage &ndash;&gt;-->
+<!--                                <exclude>./target/classes/com/github/wxshop/generate/*.class</exclude>-->
+<!--                            </excludes>-->
                         </configuration>
                     </execution>
                 </executions>

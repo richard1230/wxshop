@@ -1,7 +1,6 @@
 package com.github.wxshop.controller;
 
 
-import com.github.wxshop.entity.HttpException;
 import com.github.wxshop.entity.PageResponse;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.generate.Shop;
@@ -42,24 +41,16 @@ public class ShopController {
                                      @RequestBody Shop shop,
                                      HttpServletResponse response) {
         shop.setId(id);
-        try {
-            return Response.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+        return Response.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
+
     }
 
 
     @DeleteMapping("/shop/{id}")
     public Response<Shop> deleteShop(
-            @PathVariable("id") Long shopId, HttpServletResponse response) {
-        try {
-            return Response.of(shopService.deleteShop(shopId, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            response.setStatus(e.getStatusCode());
-            return Response.of(e.getMessage(), null);
-        }
+            @PathVariable("id") Long shopId) {
+        return Response.of(shopService.deleteShop(shopId, UserContext.getCurrentUser().getId()));
+
     }
 
 

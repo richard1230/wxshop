@@ -1,6 +1,5 @@
 package com.github.wxshop.controller;
 
-import com.github.wxshop.entity.HttpException;
 import com.github.wxshop.entity.PageResponse;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.entity.ShoppingCartData;
@@ -44,11 +43,7 @@ public class ShoppingCartController {
 
     @PostMapping("/shoppingCart")
     public Response<ShoppingCartData> addToShoppingCart(@RequestBody AddToShoppingCartRequest request) {
-        try {
-            return Response.of(shoppingCartService.addToShoppingCart(request, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            return Response.of(e.getMessage(), null);
-        }
+        return Response.of(shoppingCartService.addToShoppingCart(request, UserContext.getCurrentUser().getId()));
     }
 
 
@@ -94,11 +89,7 @@ public class ShoppingCartController {
     //将当前商品购物车里面的goodsId标记成deleted就行了
     @DeleteMapping("/shoppingCart/{id}")
     public Response<ShoppingCartData> deleteGoodsInShoppingCart(@PathVariable("id") Long goodsId) {
-        try {
-            return Response.of(shoppingCartService.deleteGoodsInShoppingCart(goodsId, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e) {
-            return Response.of(e.getMessage(), null);
-        }
+        return Response.of(shoppingCartService.deleteGoodsInShoppingCart(goodsId, UserContext.getCurrentUser().getId()));
     }
 
 
