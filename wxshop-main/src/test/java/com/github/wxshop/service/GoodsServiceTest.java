@@ -1,9 +1,9 @@
 package com.github.wxshop.service;
 
 
+import com.github.api.data.PageResponse;
 import com.github.wxshop.entity.DataStatus;
-import com.github.wxshop.entity.HttpException;
-import com.github.wxshop.entity.PageResponse;
+import com.github.api.exceptions.HttpException;
 import com.github.wxshop.generate.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -164,4 +164,5 @@ class GoodsServiceTest {
         Mockito.when(goodsMapper.updateByExample(any(), any())).thenReturn(1);
         Assertions.assertEquals(goods, goodsService.updateGoods(goods));
     }
+
 }

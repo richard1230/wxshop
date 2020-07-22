@@ -1,8 +1,8 @@
 package com.github.wxshop.service;
 
+import com.github.api.data.PageResponse;
 import com.github.wxshop.entity.DataStatus;
-import com.github.wxshop.entity.HttpException;
-import com.github.wxshop.entity.PageResponse;
+import com.github.api.exceptions.HttpException;
 import com.github.wxshop.generate.Shop;
 import com.github.wxshop.generate.ShopExample;
 import com.github.wxshop.generate.ShopMapper;

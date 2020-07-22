@@ -16,6 +16,7 @@
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="CREATED_AT" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="UPDATED_AT" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="SHOP_ID" jdbcType="BIGINT" property="shopId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--

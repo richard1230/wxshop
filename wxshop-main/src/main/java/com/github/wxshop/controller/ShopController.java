@@ -1,7 +1,7 @@
 package com.github.wxshop.controller;
 
 
-import com.github.wxshop.entity.PageResponse;
+import com.github.api.data.PageResponse;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.generate.Shop;
 import com.github.wxshop.service.ShopService;

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.api.DataStatus;
 import com.github.api.data.GoodsInfo;
 import com.github.api.data.OrderInfo;
+import com.github.api.data.PageResponse;
+import com.github.api.data.RpcOrderGoods;
 import com.github.api.generate.Order;
 import com.github.wxshop.WxshopApplication;
 import com.github.wxshop.entity.GoodsWithNumber;
@@ -105,5 +107,51 @@ public class OrderIntegrationTest extends AbstractIntegrationTest {
 
         // 确保扣库存成功的回滚了
         canCreateOrder();
+    }
+
+    @Test
+    public void canDeleteOrder() throws Exception {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+        when(mockOrderRpcService.orderRpcService.getOrder(any(),any(),any(),any()))
+                .thenReturn();
+
+        //获取当前订单
+        PageResponse<OrderResponse> orders = doHttpRequest("/api/v1/order?pageSize=2&pageNum=1", "GET", null, loginResponse.cookie)
+                .asJsonObject(new TypeReference<PageResponse<OrderResponse>>() {
+                });
+        //删除某个订单
+        canCreateOrder();
+    }
+
+    private PageResponse<RpcOrderGoods> mockResponse(){
+        RpcOrderGoods orderGoods1 = new RpcOrderGoods();
+        RpcOrderGoods orderGoods2 = new RpcOrderGoods();
+
+        Order order1 = new Order();
+    }
+
+    private RpcOrderGoods mockRpcOrderGoods(long orderId,
+                                            long userId,
+                                            long goodsId,
+                                            long shopId,
+                                            int number,
+                                            DataStatus status){
+        RpcOrderGoods orderGoods = new RpcOrderGoods();
+        Order order = new Order();
+        GoodsInfo goodsInfo = new GoodsInfo();
+
+        goodsInfo.setId(goodsId);
+        goodsInfo.setNumber(number);
+
+        order.setId(orderId);
+        order.setUserId(userId);
+        order.setShopId(shopId);
+        order.setStatus(status.getName());
+
+        orderGoods.setGoods(Arrays.asList(goodsInfo));
+        orderGoods.setOrder(order);
+
+        return orderGoods;
+
     }
 }

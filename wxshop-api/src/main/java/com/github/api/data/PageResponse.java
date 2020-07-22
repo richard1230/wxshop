@@ -12,7 +12,7 @@ public class PageResponse<T> implements Serializable {
     public PageResponse() {
     }
 
-    public static <T> PageResponse<T> pageData(int pageNum, int pageSize, int totalPage, List<T> data) {
+    public static <T> PageResponse<T> pagedData(int pageNum, int pageSize, int totalPage, List<T> data) {
         PageResponse<T> result = new PageResponse<>();
         result.setPageNum(pageNum);
         result.setPageSize(pageSize);

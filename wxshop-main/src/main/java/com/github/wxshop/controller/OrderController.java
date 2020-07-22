@@ -1,16 +1,17 @@
 package com.github.wxshop.controller;
 
 
+import com.github.api.DataStatus;
 import com.github.api.data.OrderInfo;
+import com.github.api.data.PageResponse;
+import com.github.api.exceptions.HttpException;
+import com.github.api.generate.Order;
 import com.github.wxshop.entity.OrderResponse;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.service.OrderService;
 import com.github.wxshop.service.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,7 +26,16 @@ public class OrderController {
 
 
 
-    public void getOrder() {
+    @GetMapping("/order")
+    public PageResponse<OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
+                                                @RequestParam("pageSize") Integer pageSize,
+                                                @RequestParam(value = "status",required = false) String status
+
+    ) {
+        if (status != null && DataStatus.fromStatus(status) == null){
+            throw HttpException.badRequest("非法status: " + status);
+        }
+        return orderService.getOrder(pageNum,pageSize,DataStatus.fromStatus(status));
     }
 
     @PostMapping("/order")
@@ -34,11 +44,18 @@ public class OrderController {
         return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
     }
 
-    public void updateOrder() {
+    @PatchMapping("/order")
+    public Response<OrderResponse> updateOrder(@RequestBody Order order) {
+        if (order.getExpressCompany() != null) {
+            return orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId());
+        } else {
+            return orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId());
+        }
     }
 
-
-    public void deleteOrder() {
+    @DeleteMapping("/order/{id}")
+    public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
+        return Response.of(orderService.deleteOrder(orderId));
     }
 
 }

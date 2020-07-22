@@ -1,4 +1,5 @@
-package com.github.wxshop.entity;
+package com.github.api.exceptions;
+
 
 import org.springframework.http.HttpStatus;
 
