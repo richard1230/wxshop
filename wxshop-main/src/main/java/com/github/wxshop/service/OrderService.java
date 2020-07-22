@@ -136,7 +136,7 @@ public class OrderService {
         return toOrderResponse(orderRpcService.deleteOrder(orderId, userId));
     }
 
-    public PageResponse<OrderResponse> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+    public PageResponse<OrderResponse> getOrder( long userId, Integer pageNum, Integer pageSize, DataStatus status) {
         PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId, pageNum, pageSize, status);
 
         List<GoodsInfo> goodIds = rpcOrderGoods
@@ -163,7 +163,7 @@ public class OrderService {
     }
 
 
-    public OrderResponse updateExpressInformation(Order order,long userId){
+    public OrderResponse updateExpressInformation(Order order, long userId){
         Order orderInDatabase = orderRpcService.getOrderById(order.getId());
         if (orderInDatabase == null){
             throw HttpException.notFound("订单未找到："+order.getId());

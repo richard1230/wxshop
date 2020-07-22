@@ -74,6 +74,7 @@ public class RpcOrderServiceIml implements OrderRpcService {
         return result;
     }
 
+
     @Override
     public PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
         OrderExample countByStatus = new OrderExample();
