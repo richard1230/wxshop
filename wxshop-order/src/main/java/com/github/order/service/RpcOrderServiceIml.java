@@ -37,6 +37,7 @@ public class RpcOrderServiceIml implements OrderRpcService {
 
     private OrderGoodsMapper orderGoodsMapper;
 
+    //这种写法是为了保证在单元测试里面也能用RpcOrderServiceIml
     @Autowired
     public RpcOrderServiceIml(OrderMapper orderMapper, MyOrderMapper myOrderMapper, OrderGoodsMapper orderGoodsMapper) {
         this.orderMapper = orderMapper;
