@@ -116,6 +116,7 @@ public class AbstractIntegrationTest {
     private HttpRequest createRequest(String url, String method) {
         if ("PATCH".equalsIgnoreCase(method)) {
             // workaround for https://bugs.openjdk.java.net/browse/JDK-8207840
+            //jdk底层不支持 patch 方法 ， 这是jdk的一个bug
             HttpRequest request = new HttpRequest(url, "POST");
             request.header("X-HTTP-Method-Override", "PATCH");
             return request;

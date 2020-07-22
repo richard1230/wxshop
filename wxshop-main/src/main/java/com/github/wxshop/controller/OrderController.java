@@ -25,17 +25,16 @@ public class OrderController {
     }
 
 
-
     @GetMapping("/order")
     public PageResponse<OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
                                                 @RequestParam("pageSize") Integer pageSize,
-                                                @RequestParam(value = "status",required = false) String status
+                                                @RequestParam(value = "status", required = false) String status
 
     ) {
-        if (status != null && DataStatus.fromStatus(status) == null){
+        if (status != null && DataStatus.fromStatus(status) == null) {
             throw HttpException.badRequest("非法status: " + status);
         }
-        return orderService.getOrder(UserContext.getCurrentUser().getId(),pageNum,pageSize,DataStatus.fromStatus(status));
+        return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.fromStatus(status));
     }
 
     @PostMapping("/order")
@@ -55,7 +54,7 @@ public class OrderController {
 
     @DeleteMapping("/order/{id}")
     public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
-        return Response.of(orderService.deleteOrder(orderId,UserContext.getCurrentUser().getId()));
+        return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
     }
 
 }

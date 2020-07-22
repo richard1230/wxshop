@@ -8,6 +8,8 @@
     </settings>
     <typeAliases>
         <typeAlias type="com.github.api.data.OrderInfo" alias="OrderInfo"/>
+        <typeAlias type="com.github.api.data.GoodsInfo" alias="GoodsInfo"/>
+        <typeAlias type="com.github.api.generate.Order" alias="Order"/>
     </typeAliases>
     <mappers>
         <mapper resource="db/mybatis/MyOrderMapper.xml"/>

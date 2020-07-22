@@ -26,12 +26,12 @@ public class MockOrderRpcService implements OrderRpcService {
 
     @Override
     public RpcOrderGoods deleteOrder(long orderId, long userId) {
-        return orderRpcService.deleteOrder(orderId,userId);
+        return orderRpcService.deleteOrder(orderId, userId);
     }
 
     @Override
     public PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
-        return orderRpcService.getOrder(userId,pageNum,pageSize,status);
+        return orderRpcService.getOrder(userId, pageNum, pageSize, status);
     }
 
     @Override

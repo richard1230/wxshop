@@ -232,6 +232,7 @@ public class OrderIntegrationTest extends AbstractIntegrationTest {
     }
 
     private PageResponse<RpcOrderGoods> mockResponse(){
+        //在店铺2里面买了id为3和4的商品
         RpcOrderGoods order1 = mockRpcOderGoods(100, 1, 3, 2, 5, DataStatus.DELIVERED);
         RpcOrderGoods order2 = mockRpcOderGoods(101, 1, 4, 2, 3, DataStatus.RECEIVED);
 

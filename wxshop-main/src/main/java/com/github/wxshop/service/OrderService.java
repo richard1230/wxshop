@@ -69,7 +69,7 @@ public class OrderService {
         Long shopId = new ArrayList<>(idToGoodsMap.values()).get(0).getShopId();
         response.setShop(shopMapper.selectByPrimaryKey(shopId));
         response.setGoods(
-                        goodsInfo
+                goodsInfo
                         .stream()
                         .map(goods -> toGoodsWithNumber(goods, idToGoodsMap))
                         .collect(toList())
@@ -85,7 +85,7 @@ public class OrderService {
         for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
             if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
                 LOGGER.error("扣减库存失败, 商品id: " + goodsInfo.getId() + "，数量：" + goodsInfo.getNumber());
-                    throw HttpException.gone("扣减库存失败!");
+                throw HttpException.gone("扣减库存失败!");
             }
         }
     }
@@ -132,11 +132,11 @@ public class OrderService {
         return goodsService.getIdToGoodsMap(goodsId);
     }
 
-    public OrderResponse deleteOrder(long orderId, long userId){
+    public OrderResponse deleteOrder(long orderId, long userId) {
         return toOrderResponse(orderRpcService.deleteOrder(orderId, userId));
     }
 
-    public PageResponse<OrderResponse> getOrder( long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+    public PageResponse<OrderResponse> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
         PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId, pageNum, pageSize, status);
 
         List<GoodsInfo> goodIds = rpcOrderGoods
@@ -163,18 +163,18 @@ public class OrderService {
     }
 
 
-    public OrderResponse updateExpressInformation(Order order, long userId){
+    public OrderResponse updateExpressInformation(Order order, long userId) {
         Order orderInDatabase = orderRpcService.getOrderById(order.getId());
-        if (orderInDatabase == null){
-            throw HttpException.notFound("订单未找到："+order.getId());
+        if (orderInDatabase == null) {
+            throw HttpException.notFound("订单未找到：" + order.getId());
         }
 
         Shop shop = shopMapper.selectByPrimaryKey(orderInDatabase.getShopId());
-        if (shop == null){
-            throw HttpException.notFound("店铺未找到："+orderInDatabase.getShopId());
+        if (shop == null) {
+            throw HttpException.notFound("店铺未找到：" + orderInDatabase.getShopId());
         }
 
-        if (shop.getOwnerUserId() != userId){
+        if (shop.getOwnerUserId() != userId) {
             throw HttpException.forbidden("无权访问！");
         }
 
@@ -202,8 +202,8 @@ public class OrderService {
     }
 
     private OrderResponse toOrderResponse(RpcOrderGoods rpcOrderGoods) {
-        Map<Long,Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
-        return generateResponse(rpcOrderGoods.getOrder(),idToGoodsMap,rpcOrderGoods.getGoods());
+        Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
+        return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
     }
 
 

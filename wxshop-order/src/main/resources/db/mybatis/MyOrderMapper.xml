@@ -6,7 +6,7 @@
         values
         <foreach item="item" collection="goods"
                  separator=",">
-            (#{item.id},#{id},#{item.number})
+            (#{item.id},#{orderid},#{item.number})
         </foreach>
     </insert>
     <select id="getGoodsInfoOfOrder" parameterType="long" resultType="GoodsInfo">
