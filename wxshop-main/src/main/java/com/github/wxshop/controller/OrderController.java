@@ -35,7 +35,7 @@ public class OrderController {
         if (status != null && DataStatus.fromStatus(status) == null){
             throw HttpException.badRequest("非法status: " + status);
         }
-        return orderService.getOrder(pageNum,pageSize,DataStatus.fromStatus(status));
+        return orderService.getOrder(UserContext.getCurrentUser().getId(),pageNum,pageSize,DataStatus.fromStatus(status));
     }
 
     @PostMapping("/order")
@@ -44,18 +44,18 @@ public class OrderController {
         return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
     }
 
-    @PatchMapping("/order")
-    public Response<OrderResponse> updateOrder(@RequestBody Order order) {
+    @RequestMapping(value = "/order/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
+    public Response<OrderResponse> updateOrder(@PathVariable("id") Integer id, @RequestBody Order order) {
         if (order.getExpressCompany() != null) {
-            return orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId());
+            return Response.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
         } else {
-            return orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId());
+            return Response.of(orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId()));
         }
     }
 
     @DeleteMapping("/order/{id}")
     public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
-        return Response.of(orderService.deleteOrder(orderId));
+        return Response.of(orderService.deleteOrder(orderId,UserContext.getCurrentUser().getId()));
     }
 
 }
