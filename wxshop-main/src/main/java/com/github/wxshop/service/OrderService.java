@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -126,6 +127,9 @@ public class OrderService {
     }
 
     private Map<Long, Goods> getIdToGoodsMap(List<GoodsInfo> goodsInfo) {
+        if (goodsInfo.isEmpty()) {
+            return Collections.emptyMap();
+        }
         List<Long> goodsId = goodsInfo
                 .stream()
                 .map(GoodsInfo::getId)

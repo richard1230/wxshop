@@ -291,6 +291,5 @@ public class OrderIntegrationTest extends AbstractIntegrationTest {
         orderGoods.setOrder(order);
 
         return orderGoods;
-
     }
 }
