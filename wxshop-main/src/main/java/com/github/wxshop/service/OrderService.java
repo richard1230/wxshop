@@ -100,6 +100,7 @@ public class OrderService {
     private Order createOrderRpcViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
         Order order = new Order();
         order.setUserId(userId);
+        order.setShopId(new ArrayList<>(idToGoodsMap.values()).get(0).getShopId());
         order.setStatus(DataStatus.PENDING.getName());
         order.setAddress(userMapper.selectByPrimaryKey(userId).getAddress());
         order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
