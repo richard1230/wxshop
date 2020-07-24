@@ -68,7 +68,7 @@ public class GoodsService {
         }
     }
 
-    public PageResponse<Goods> getGoods(Integer pageNum, Integer pageSize, Integer shopId) {
+    public PageResponse<Goods> getGoods(Integer pageNum, Integer pageSize, Long shopId) {
         //知道有多少个元素
         //而后才知道有多少页
         //而后才可以分页
@@ -80,12 +80,16 @@ public class GoodsService {
         page.setLimit(pageSize);
         page.setOffset((pageNum - 1) * pageSize);
 
+        if (shopId != null) {
+            page.createCriteria().andShopIdEqualTo(shopId);
+        }
+
         List<Goods> pageGoods = goodsMapper.selectByExample(page);
 
         return PageResponse.pagedData(pageNum, pageSize, totalPage, pageGoods);
     }
 
-    private int countGoods(Integer shopId) {
+    private int countGoods(Long shopId) {
         if (shopId == null) {
             GoodsExample goodsExample = new GoodsExample();
             goodsExample.createCriteria().andStatusEqualTo(DataStatus.OK.getName());

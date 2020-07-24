@@ -17,7 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GoodsServiceTest {
@@ -136,8 +138,6 @@ class GoodsServiceTest {
         Assertions.assertEquals(10, result.getPageSize());
 
         List mockData = Mockito.mock(List.class);
-//        Mockito.when(goodsMapper.selectByExample(any())).thenReturn(mockData);
-//        Assertions.assertEquals(mockData, result.getData());
     }
 
     @Test
@@ -145,15 +145,23 @@ class GoodsServiceTest {
         int pageNumber = 5;
         int pageSize = 10;
 
-        Mockito.when(goodsMapper.countByExample(any())).thenReturn(100L);
-        PageResponse<Goods> result = goodsService.getGoods(pageNumber, pageSize, 456);
-        Assertions.assertEquals(10, result.getTotalPage());
-        Assertions.assertEquals(5, result.getPageNum());
-        Assertions.assertEquals(10, result.getPageSize());
+//        Mockito.when(goodsMapper.countByExample(any())).thenReturn(100L);
+//        PageResponse<Goods> result = goodsService.getGoods(pageNumber, pageSize, 456L);
+//        Assertions.assertEquals(10, result.getTotalPage());
+//        Assertions.assertEquals(5, result.getPageNum());
+//        Assertions.assertEquals(10, result.getPageSize());
+//
+//        List mockData = Mockito.mock(List.class);
+        List<Goods> mockData = Mockito.mock(List.class);
 
-        List mockData = Mockito.mock(List.class);
-//        Mockito.when(goodsMapper.selectByExample(any())).thenReturn(mockData);
-//        Assertions.assertEquals(mockData, result.getData());
+        when(goodsMapper.countByExample(any())).thenReturn(100L);
+        when(goodsMapper.selectByExample(any())).thenReturn(mockData);
+        PageResponse<Goods> result = goodsService.getGoods(pageNumber, pageSize, 456L);
+
+        assertEquals(10, result.getTotalPage());
+        assertEquals(5, result.getPageNum());
+        assertEquals(10, result.getPageSize());
+        assertEquals(mockData, result.getData());
     }
 
 
