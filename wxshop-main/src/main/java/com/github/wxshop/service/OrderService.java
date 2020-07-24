@@ -60,7 +60,7 @@ public class OrderService {
 
     public OrderResponse createOrder(OrderInfo orderInfo, Long userId) {
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(orderInfo.getGoods());
-        Order createOrder = createOrderRpcViaRpc(orderInfo, userId, idToGoodsMap);
+        Order createOrder = createOrderViaRpc(orderInfo, userId, idToGoodsMap);
         return generateResponse(createOrder, idToGoodsMap, orderInfo.getGoods());
     }
 
@@ -97,13 +97,16 @@ public class OrderService {
 
     }
 
-    private Order createOrderRpcViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
+    private Order createOrderViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
         Order order = new Order();
         order.setUserId(userId);
         order.setShopId(new ArrayList<>(idToGoodsMap.values()).get(0).getShopId());
         order.setStatus(DataStatus.PENDING.getName());
-        order.setAddress(userMapper.selectByPrimaryKey(userId).getAddress());
-        order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
+        String address = orderInfo.getAddress() == null ?
+                userMapper.selectByPrimaryKey(userId).getAddress() :
+                orderInfo.getAddress();
+
+        order.setAddress(address);        order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
 
         return orderRpcService.createOrder(orderInfo, order);
     }
