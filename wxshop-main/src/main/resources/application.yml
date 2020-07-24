@@ -13,7 +13,7 @@ mybatis:
 
 wxshop:
   redis:
-    host: 127.0.0.1
+    host: localhost
     port: 6379
   orderservice:
     version: 0.0.1
@@ -21,4 +21,4 @@ wxshop:
 
 dubbo:
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://localhost:2181
