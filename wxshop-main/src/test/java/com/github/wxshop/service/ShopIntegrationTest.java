@@ -35,6 +35,5 @@ public class ShopIntegrationTest  extends AbstractIntegrationTest{
         assertEquals(2, shopResponse.getPageNum());
         assertEquals(2L, shopResponse.getData().get(0).getId());
         assertEquals("shop2", shopResponse.getData().get(0).getName());
-
     }
 }

@@ -106,5 +106,16 @@ public class GoodsService {
         List<Goods> goods = goodsMapper.selectByExample(example);
         return goods.stream().collect(toMap(Goods::getId, x -> x));
     }
+
+    public Goods getGoodsById(long shopId) {
+        GoodsExample okStatus = new GoodsExample();
+        okStatus.createCriteria().andIdEqualTo(shopId)
+                .andStatusEqualTo(DataStatus.OK.name());
+        List<Goods> goods = goodsMapper.selectByExampleWithBLOBs(okStatus);
+        if (goods.isEmpty()) {
+            throw HttpException.notFound("商品未找到：" + shopId);
+        }
+        return goods.get(0);
+    }
 }
 

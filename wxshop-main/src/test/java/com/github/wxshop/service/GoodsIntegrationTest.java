@@ -91,6 +91,37 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
                 null,
                 cookie);
         assertEquals(SC_NOT_FOUND, response.code);
+    }
 
+    @Test
+    public void testGetGoodsById() throws JsonProcessingException {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+        Response<Goods> goodsResponse = doHttpRequest(
+                "/api/v1/goods/2",
+                "GET",
+                null,
+                loginResponse.cookie)
+                .asJsonObject(new TypeReference<Response<Goods>>() {
+                });
+
+        assertEquals(2L, goodsResponse.getData().getId());
+        assertEquals("goods2", goodsResponse.getData().getName());
+        assertEquals("desc2", goodsResponse.getData().getDescription());
+        assertEquals("details2", goodsResponse.getData().getDetails());
+    }
+    @Test
+    public void testGetShopById() throws Exception {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+        Response<Shop> shopResponse = doHttpRequest(
+                "/api/v1/shop/2",
+                "GET",
+                null,
+                loginResponse.cookie)
+                .asJsonObject(new TypeReference<Response<Shop>>() {
+                });
+
+        assertEquals(2L, shopResponse.getData().getId());
+        assertEquals("shop2", shopResponse.getData().getName());
+        assertEquals("desc2", shopResponse.getData().getDescription());
     }
 }

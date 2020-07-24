@@ -80,6 +80,13 @@ public class GoodsController {
 
     // @formatter:off
 
+
+    @GetMapping("/goods/{id}")
+    public @ResponseBody
+    Response<Goods> getGoodsById(@PathVariable("id") long shopId) {
+        return Response.of(goodsService.getGoodsById(shopId));
+    }
+
     /**
      * @param goods
      * @param response

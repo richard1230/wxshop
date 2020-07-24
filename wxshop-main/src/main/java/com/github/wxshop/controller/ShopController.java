@@ -28,6 +28,10 @@ public class ShopController {
         return shopService.getShopByUserId(UserContext.getCurrentUser().getId(), pageNum, pageSize);
     }
 
+    @GetMapping("/shop/{id}")
+    public Response<Shop> getShop(@PathVariable("id") long shopId) {
+        return Response.of(shopService.getShopById(shopId));
+    }
 
     @PostMapping("/shop")
     public Response<Shop> createShop(@RequestBody Shop shop, HttpServletResponse response) {
