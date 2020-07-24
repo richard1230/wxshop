@@ -184,12 +184,12 @@ public class GoodsController {
      * "message": "Unauthorized"
      * }
      * @param goods
-     * @param response
      * @return Response<Goods>
      */
     // @formatter:on
-    public Response<Goods> updateGoods(Goods goods, HttpServletResponse response) {
-            return Response.of(goodsService.updateGoods(goods));
+    @RequestMapping(value = "/goods/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
+    public Response<Goods> updateGoods(@RequestBody Goods goods) {
+        return Response.of(goodsService.updateGoods(goods));
 
     }
 

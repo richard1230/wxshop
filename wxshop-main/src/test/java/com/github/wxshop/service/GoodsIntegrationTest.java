@@ -2,10 +2,12 @@ package com.github.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.api.DataStatus;
 import com.github.wxshop.WxshopApplication;
 import com.github.wxshop.entity.Response;
 import com.github.wxshop.generate.Goods;
 import com.github.wxshop.generate.Shop;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -109,6 +111,42 @@ public class GoodsIntegrationTest extends AbstractIntegrationTest {
         assertEquals("desc2", goodsResponse.getData().getDescription());
         assertEquals("details2", goodsResponse.getData().getDetails());
     }
+
+    @Test
+    public void testUpdateGoods() throws Exception {
+        UserLoginResponse loginResponse = loginAndGetCookie();
+
+        Goods goods = new Goods();
+        goods.setId(2L);
+        goods.setShopId(1L);
+        goods.setName("NewName");
+        goods.setDescription("NewDesc");
+        goods.setDetails("NewDetails");
+        goods.setImgUrl("NewUrl");
+        goods.setPrice(12345L);
+        goods.setStock(1111);
+        goods.setStatus(DataStatus.DELETED.getName());
+
+        Response<Goods> goodsResponse = doHttpRequest(
+                "/api/v1/goods/2",
+                "PATCH",
+                goods,
+                loginResponse.cookie)
+                .asJsonObject(new TypeReference<Response<Goods>>() {
+                });
+
+        Assertions.assertEquals(2L, goodsResponse.getData().getId());
+        Assertions.assertEquals(1L, goodsResponse.getData().getShopId());
+        Assertions.assertEquals("NewName", goodsResponse.getData().getName());
+        Assertions.assertEquals("NewDesc", goodsResponse.getData().getDescription());
+        Assertions.assertEquals("NewDetails", goodsResponse.getData().getDetails());
+        Assertions.assertEquals("NewUrl", goodsResponse.getData().getImgUrl());
+        Assertions.assertEquals(12345L, goodsResponse.getData().getPrice());
+        Assertions.assertEquals(1111, goodsResponse.getData().getStock());
+    }
+
+
+
     @Test
     public void testGetShopById() throws Exception {
         UserLoginResponse loginResponse = loginAndGetCookie();
