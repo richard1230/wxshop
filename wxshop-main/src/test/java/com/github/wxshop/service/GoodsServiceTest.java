@@ -1,6 +1,7 @@
 package com.github.wxshop.service;
 
 
+import com.github.api.DataStatus;
 import com.github.api.data.PageResponse;
 import com.github.api.exceptions.HttpException;
 import com.github.wxshop.generate.*;
@@ -85,7 +86,7 @@ class GoodsServiceTest {
     void throwExceptionIfGoodsNotFound() {
         long goodsToBeDeleted = 123;
 
-        Mockito.when(shop.getOwnerUserId()).thenReturn(1L);
+//        Mockito.when(shop.getOwnerUserId()).thenReturn(1L);
         Mockito.when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(null);
         HttpException thrownException = Assertions.assertThrows(HttpException.class, () -> {
             goodsService.deleteGoodsById(goodsToBeDeleted);
@@ -102,7 +103,7 @@ class GoodsServiceTest {
         //类比 createGoodsFailedIfUserIsNotOwner
         Mockito.when(shop.getOwnerUserId()).thenReturn(2L);
         //下面这一行有的话会报错,多余
-//        Mockito.when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(goods);
+        Mockito.when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(goods);
         HttpException thrownException = Assertions.assertThrows(HttpException.class, () -> {
             goodsService.deleteGoodsById(goodsToBeDeleted);
         });
@@ -154,15 +155,6 @@ class GoodsServiceTest {
         assertEquals(5, result.getPageNum());
         assertEquals(10, result.getPageSize());
         assertEquals(mockData, result.getData());
-    }
-
-
-    @Test
-    public void updateGoodsSucceed() {
-        //为什么要用上面两行,光有第三行不就ok了？
-        Mockito.when(shop.getOwnerUserId()).thenReturn(1L);
-        Mockito.when(goodsMapper.updateByExample(any(), any())).thenReturn(1);
-        Assertions.assertEquals(goods, goodsService.updateGoods(goods));
     }
 
 }
