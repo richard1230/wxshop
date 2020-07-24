@@ -5,9 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TelVerificationServiceTest {
-    static AuthController.TelAndCode VALID_PARAMTER = new AuthController.TelAndCode("13800000000", null);
-    static AuthController.TelAndCode VALID_PARAMTER_CODE = new AuthController.TelAndCode("13800000000", "000000");
-    static AuthController.TelAndCode EMPTY_TEL = new AuthController.TelAndCode(null, null);
+    public static AuthController.TelAndCode VALID_PARAMTER = new AuthController.TelAndCode("13800000000", null);
+    public static AuthController.TelAndCode VALID_PARAMTER_CODE = new AuthController.TelAndCode("13800000000", "000000");
+    public static AuthController.TelAndCode WRONG_CODE = new AuthController.TelAndCode("13800000000", "123456");
+    public static AuthController.TelAndCode EMPTY_TEL = new AuthController.TelAndCode(null, null);
 
     @Test
     public void returnTrueIfValid() {

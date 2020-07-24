@@ -12,8 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.TestPropertySource;
 import static com.github.wxshop.service.TelVerificationServiceTest.VALID_PARAMTER;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_OK;
+import static com.github.wxshop.service.TelVerificationServiceTest.WRONG_CODE;
+import static java.net.HttpURLConnection.*;
 
 @ExtendWith(SpringExtension.class)//SpringExtension:spring为junit5提供的插件,你可以在这个测试里面使用spring相关的功能,包括依赖注入
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -53,6 +53,18 @@ public class  AuthIntegrationTest extends AbstractIntegrationTest {
                 .code();
         Assertions.assertEquals(HTTP_OK, responseCode);
     }
+
+    @Test
+    public void returnForbiddenWhenCodeIsNotCorrect() throws Exception {
+
+        int responseCode = doHttpRequest(
+                "/api/v1/login",
+                "POST",
+                WRONG_CODE,
+                null).code;
+        Assertions.assertEquals(HTTP_FORBIDDEN,responseCode);
+    }
+
 
     @Test
     public void returnHttpBadRequestWhenParameterIsCorrect() throws JsonProcessingException {

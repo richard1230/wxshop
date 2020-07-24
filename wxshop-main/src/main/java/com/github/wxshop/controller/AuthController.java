@@ -7,6 +7,7 @@ import com.github.wxshop.service.TelVerificationService;
 import com.github.wxshop.service.UserContext;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,13 +41,17 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public void login(@RequestBody TelAndCode telAndCode){
+    public void login(@RequestBody TelAndCode telAndCode, HttpServletResponse response){
         UsernamePasswordToken token = new UsernamePasswordToken(
                 telAndCode.getTel(),
                 telAndCode.getCode());
 
         token.setRememberMe(true ); //这一步可能有问题！！
-        SecurityUtils.getSubject().login(token);
+        try {
+            SecurityUtils.getSubject().login(token);
+        } catch (IncorrectCredentialsException e) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
     }
 
     @PostMapping("/logout")
