@@ -53,6 +53,7 @@ public class ShoppingCartService {
                 .values()
                 .stream()
                 .map(this::merge)
+                .filter(Objects::nonNull)
                 .collect(toList());
 
         int totalPage = totalNum % pageSize == 0 ? totalNum / pageSize : totalNum / pageSize + 1;
@@ -60,6 +61,9 @@ public class ShoppingCartService {
     }
 
     private ShoppingCartData merge(List<ShoppingCartData> goodsOfSameShop) {
+        if (goodsOfSameShop.isEmpty()) {
+            return null;
+        }
         ShoppingCartData result = new ShoppingCartData();
         result.setShop(goodsOfSameShop.get(0).getShop());
         List<GoodsWithNumber> goods = goodsOfSameShop.stream()
