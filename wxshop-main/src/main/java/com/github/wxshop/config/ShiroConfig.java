@@ -1,5 +1,6 @@
 package com.github.wxshop.config;
 
+import com.github.wxshop.generate.User;
 import com.github.wxshop.service.ShiroRealm;
 import com.github.wxshop.service.UserContext;
 import com.github.wxshop.service.UserService;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Configuration
 @EnableTransactionManagement
@@ -58,8 +60,14 @@ public class ShiroConfig implements WebMvcConfigurer {
 
                 Object tel = SecurityUtils.getSubject().getPrincipal();
                 if (tel != null) {
-                    userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
-                    return true;
+                    Optional<User> user = userService.getUserByTel(tel.toString());
+                    if (user.isPresent()) {
+                        UserContext.setCurrentUser(user.get());
+                        return true;
+                    } else {
+                        response.setStatus(401);
+                        return false;
+                    }
                 } else if (Arrays.asList(
                         "/api/v1/code",
                         "/api/v1/login",
