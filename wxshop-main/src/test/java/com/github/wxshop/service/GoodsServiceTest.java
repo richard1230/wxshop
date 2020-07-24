@@ -145,13 +145,6 @@ class GoodsServiceTest {
         int pageNumber = 5;
         int pageSize = 10;
 
-//        Mockito.when(goodsMapper.countByExample(any())).thenReturn(100L);
-//        PageResponse<Goods> result = goodsService.getGoods(pageNumber, pageSize, 456L);
-//        Assertions.assertEquals(10, result.getTotalPage());
-//        Assertions.assertEquals(5, result.getPageNum());
-//        Assertions.assertEquals(10, result.getPageSize());
-//
-//        List mockData = Mockito.mock(List.class);
         List<Goods> mockData = Mockito.mock(List.class);
 
         when(goodsMapper.countByExample(any())).thenReturn(100L);
