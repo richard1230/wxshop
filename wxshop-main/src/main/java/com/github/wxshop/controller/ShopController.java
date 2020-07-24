@@ -42,8 +42,7 @@ public class ShopController {
 
     @PatchMapping("/shop/{id}")
     public Response<Shop> updateShop(@PathVariable("id") Long id,
-                                     @RequestBody Shop shop,
-                                     HttpServletResponse response) {
+                                     @RequestBody Shop shop) {
         shop.setId(id);
         return Response.of(shopService.updateShop(shop, UserContext.getCurrentUser().getId()));
 

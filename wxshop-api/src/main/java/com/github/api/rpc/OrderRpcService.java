@@ -8,7 +8,7 @@ import com.github.api.generate.Order;
 
 public interface OrderRpcService {
     Order createOrder(OrderInfo orderInfo, Order order);
-    Order getOrderById(long orderId);
+    RpcOrderGoods getOrderById(long orderId);
     RpcOrderGoods deleteOrder(long orderId, long userId);
     PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status);
 

@@ -37,6 +37,16 @@ public class OrderController {
         return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.fromStatus(status));
     }
 
+    /**
+     * 根据id获取订单
+     * @param id
+     * @return 订单
+     */
+    @GetMapping("/order/{id}")
+    public Response<OrderResponse> getOrderById(@PathVariable("id") long id) {
+        return Response.of(orderService.getOrderById(UserContext.getCurrentUser().getId(), id));
+    }
+
     @PostMapping("/order")
     public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
         orderService.deductStock(orderInfo);
