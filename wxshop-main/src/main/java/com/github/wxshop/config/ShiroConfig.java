@@ -106,9 +106,6 @@ public class ShiroConfig implements WebMvcConfigurer {
         return securityManager;
     }
 
-    /**
-     * Remember me manager
-     */
     public CookieRememberMeManager rememberMeManager() {
         SimpleCookie cookie = new SimpleCookie(COOKIE_NAME);
         cookie.setMaxAge(EXPIRY_TIME);
