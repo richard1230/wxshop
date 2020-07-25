@@ -16,7 +16,6 @@ import com.github.wxshop.generate.Shop;
 import com.github.wxshop.generate.ShopMapper;
 import com.github.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

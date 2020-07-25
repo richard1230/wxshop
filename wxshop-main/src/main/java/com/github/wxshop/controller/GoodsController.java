@@ -183,10 +183,10 @@ public class GoodsController {
      * {
      * "message": "Unauthorized"
      * }
+     * @param id
      * @param goods
      * @return Response<Goods>
      */
-    // @formatter:on
     @RequestMapping(value = "/goods/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
     public Response<Goods> updateGoods(@PathVariable("id")long id, @RequestBody Goods goods) {
         return Response.of(goodsService.updateGoods(id, goods));

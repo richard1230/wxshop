@@ -101,7 +101,7 @@ public class ShoppingCartService {
 
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             ShoppingCartMapper mapper = sqlSession.getMapper(ShoppingCartMapper.class);
-            shoppingCartRows.forEach(row -> insertGoodsToShoppingCart(userId,row,mapper));
+            shoppingCartRows.forEach(row -> insertGoodsToShoppingCart(userId, row, mapper));
             sqlSession.commit();
         }
 

@@ -1,6 +1,5 @@
 package com.github.wxshop.config;
 
-import com.github.wxshop.generate.User;
 import com.github.wxshop.service.ShiroRealm;
 import com.github.wxshop.service.UserContext;
 import com.github.wxshop.service.UserService;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Configuration
 @EnableTransactionManagement

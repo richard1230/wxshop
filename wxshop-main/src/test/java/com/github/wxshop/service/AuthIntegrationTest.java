@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.TestPropertySource;
+
 import static com.github.wxshop.service.TelVerificationServiceTest.VALID_PARAMTER;
 import static com.github.wxshop.service.TelVerificationServiceTest.WRONG_CODE;
 import static java.net.HttpURLConnection.*;
@@ -19,7 +20,7 @@ import static java.net.HttpURLConnection.*;
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //选择随机端口(原来的8080端口可能被占或者需要测并发时候的情况),端口可以在下面的environment中找到
 @TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
-public class  AuthIntegrationTest extends AbstractIntegrationTest {
+public class AuthIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
@@ -62,7 +63,7 @@ public class  AuthIntegrationTest extends AbstractIntegrationTest {
                 "POST",
                 WRONG_CODE,
                 null).code;
-        Assertions.assertEquals(HTTP_FORBIDDEN,responseCode);
+        Assertions.assertEquals(HTTP_FORBIDDEN, responseCode);
     }
 
 

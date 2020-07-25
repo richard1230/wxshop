@@ -1,5 +1,6 @@
 package com.github.wxshop.service;
 
+import com.github.api.DataStatus;
 import com.github.api.data.PageResponse;
 import com.github.api.exceptions.HttpException;
 import com.github.wxshop.generate.Shop;
