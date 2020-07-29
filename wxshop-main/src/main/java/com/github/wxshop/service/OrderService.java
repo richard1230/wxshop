@@ -103,7 +103,8 @@ public class OrderService {
                 userMapper.selectByPrimaryKey(userId).getAddress() :
                 orderInfo.getAddress();
 
-        order.setAddress(address);        order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
+        order.setAddress(address);
+        order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
 
         return orderRpcService.createOrder(orderInfo, order);
     }

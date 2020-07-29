@@ -34,7 +34,7 @@
                  JOIN SHOPPING_CART on t1.SHOP_ID = SHOPPING_CART.SHOP_ID
                  JOIN GOODS on SHOPPING_CART.GOODS_ID = GOODS.ID
                  JOIN SHOP on t1.SHOP_ID = SHOP.ID
-
+        WHERE SHOPPING_CART.STATUS = "ok"
     </select>
     <select id="selectShoppingCartDataByUserIdShopId" resultMap="getShoppingCartResultMap" parameterType="Map">
         SELECT SHOP.ID              as SHOP_ID,
