@@ -1,8 +1,8 @@
 define({
   "name": "wxshop",
   "version": "1.0.0",
-  "description": "小微商城 - 完整的微信电商项目",
-  "title": "小微商城",
+  "description": "晓风商城 - 完整的微信电商项目",
+  "title": "晓风商城",
   "url": "https://localhost:8080/api/v1",
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
