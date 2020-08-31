@@ -17,7 +17,7 @@
     - Wait for half a minute, wait for the container to start.
     -Create `order` database
     ```
-    docker exec -it wxshop-mysql mysql -uroot -proot -e 'create database if not exists `order`'
+    docker exec -it wxshop-mysql mysql -uroot -proot -e 'create database if not exists `order`
     ```
   - `./mvnw install -DskipTests`
   - `./mvnw flyway:migrate -pl wxshop-main` 
