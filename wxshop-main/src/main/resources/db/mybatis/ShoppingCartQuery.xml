@@ -64,7 +64,7 @@
     </select>
 
     <resultMap id="getShoppingCartResultMap" type="ShoppingCartData">
-         <association property="shop" javaType="Shop">
+        <association property="shop" javaType="Shop">
             <id property="id" column="SHOP_ID"/>
             <result property="name" column="SHOP_NAME"/>
             <result property="description" column="SHOP_DESCRIPTION"/>

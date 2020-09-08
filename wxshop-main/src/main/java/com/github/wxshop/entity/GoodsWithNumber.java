@@ -4,6 +4,7 @@ import com.github.wxshop.generate.Goods;
 
 public class GoodsWithNumber extends Goods {
     private int number;
+
     public GoodsWithNumber() {
     }
 

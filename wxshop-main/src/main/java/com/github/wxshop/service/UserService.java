@@ -19,7 +19,7 @@ public class UserService {
     }
 
     public User createUserIfNotExist(String tel) {
-        //这里不能先写存不存在再添加用户(并发环境下会出问题)
+        // 这里不能先写存不存在再添加用户(并发环境下会出问题)
         User user = new User();
         user.setTel(tel);
         user.setCreateAt(new Date());
@@ -31,7 +31,6 @@ public class UserService {
         }
         return user;
     }
-
 
     public Optional<User> getUserByTel(String tel) {
         return Optional.ofNullable(userDao.getUserByTel(tel));

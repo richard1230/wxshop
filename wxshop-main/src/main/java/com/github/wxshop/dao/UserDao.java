@@ -19,8 +19,6 @@ public class UserDao {
         this.userMapper = userMapper;
     }
 
-
-
     public void insertUser(User user) {
         userMapper.insert(user);
     }
@@ -29,5 +27,6 @@ public class UserDao {
         UserExample example = new UserExample();
         example.createCriteria().andTelEqualTo(tel);
         List<User> users = userMapper.selectByExample(example);
-        return users.isEmpty() ? null : users.get(0);    }
+        return users.isEmpty() ? null : users.get(0);
+    }
 }

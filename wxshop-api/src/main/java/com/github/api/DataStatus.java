@@ -24,5 +24,4 @@ public enum DataStatus {
             return null;
         }
     }
-
 }

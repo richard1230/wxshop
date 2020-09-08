@@ -12,6 +12,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
     private final AuthService authService;
     private final TelVerificationService telVerificationService;
+
     @Autowired
-    public AuthController(AuthService authService,
-                          TelVerificationService telVerificationService) {
+    public AuthController(AuthService authService, TelVerificationService telVerificationService) {
         this.authService = authService;
         this.telVerificationService = telVerificationService;
     }
@@ -30,81 +31,51 @@ public class AuthController {
      * @api {post} /code 请求验证码
      * @apiName GetCode
      * @apiGroup 登录与鉴权
-     *
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
-     *
      * @apiParam {String} tel 手机号码
-     * @apiParamExample {json} Request-Example:
-     *          {
-     *              "tel": "13812345678",
-     *          }
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
+     * @apiParamExample {json} Request-Example: { "tel": "13812345678", }
+     * @apiSuccessExample Success-Response: HTTP/1.1 200 OK
      * @apiError 400 Bad Request 若用户的请求包含错误
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *       "message": "Bad Request"
-     *     }
+     * @apiErrorExample Error-Response: HTTP/1.1 400 Bad Request { "message": "Bad Request" }
      */
     /**
      * @param telAndCode 手机号和收到的验证码
-     * @param response HTTP response
+     * @param response   HTTP response
      */
     @PostMapping("/code")
-    public void code(@RequestBody TelAndCode telAndCode,
-                     HttpServletResponse response
-    ) {
+    public void code(@RequestBody TelAndCode telAndCode, HttpServletResponse response) {
         if (telVerificationService.verifyTelParameter(telAndCode)) {
             authService.sendVerificationCode(telAndCode.getTel());
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
         }
-
     }
-
 
     /**
      * @api {post} /login 登录
      * @apiName Login
      * @apiGroup 登录与鉴权
-     *
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
-     *
      * @apiParam {String} tel 手机号码
      * @apiParam {String} code 验证码
-     * @apiParamExample {json} Request-Example:
-     *          {
-     *              "tel": "13812345678",
-     *              "code": "000000"
-     *          }
-     *
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
+     * @apiParamExample {json} Request-Example: { "tel": "13812345678", "code": "000000" }
+     * @apiSuccessExample Success-Response: HTTP/1.1 200 OK
      * @apiError 400 Bad Request 若用户的请求包含错误
      * @apiError 403 Forbidden 若用户的验证码错误
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 400 Bad Request
-     *     {
-     *       "message": "Bad Request"
-     *     }
+     * @apiErrorExample Error-Response: HTTP/1.1 400 Bad Request { "message": "Bad Request" }
      */
     /**
      * @param telAndCode 手机号
-     * @param response HTTP响应
+     * @param response   HTTP响应
      */
     @PostMapping("/login")
-    public void login(@RequestBody TelAndCode telAndCode, HttpServletResponse response){
-        UsernamePasswordToken token = new UsernamePasswordToken(
-                telAndCode.getTel(),
-                telAndCode.getCode());
+    public void login(@RequestBody TelAndCode telAndCode, HttpServletResponse response) {
+        UsernamePasswordToken token =
+                new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
 
-        token.setRememberMe(true ); //这一步可能有问题！！
+        token.setRememberMe(true); // 这一步可能有问题！！
         try {
             SecurityUtils.getSubject().login(token);
         } catch (IncorrectCredentialsException e) {
@@ -118,17 +89,12 @@ public class AuthController {
      * @apiGroup 登录与鉴权
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
-     * @apiSuccessExample Success-Response:
-     * HTTP/1.1 200 OK
+     * @apiSuccessExample Success-Response: HTTP/1.1 200 OK
      * @apiError 401 Unauthorized 若用户未登录
-     * @apiErrorExample Error-Response:
-     * HTTP/1.1 400 Bad Request
-     * {
-     * "message": "Bad Request"
-     * }
+     * @apiErrorExample Error-Response: HTTP/1.1 400 Bad Request { "message": "Bad Request" }
      */
     @PostMapping("/logout")
-    public void logout(){
+    public void logout() {
         SecurityUtils.getSubject().logout();
     }
 
@@ -136,32 +102,15 @@ public class AuthController {
      * @api {get} /status 获取登录状态
      * @apiName Status
      * @apiGroup 登录与鉴权
-     *
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
-     *
      * @apiSuccess {User} user 用户信息
      * @apiSuccess {Boolean} login 登录状态
-     * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "login": true,
-     *       "user": {
-     *           "id": 123,
-     *           "name": "张三",
-     *           "tel": "13812345678",
-     *           "avatarUrl": "https://url",
-     *           "address": "北京市 西城区 100号",
-     *       }
-     *     }
-     *
+     * @apiSuccessExample Success-Response: HTTP/1.1 200 OK { "login": true, "user": { "id": 123,
+     * "name": "张三", "tel": "13812345678", "avatarUrl": "https://url", "address": "北京市 西城区 100号",
+     * } }
      * @apiError 401 Unauthorized 若用户未登录
-     *
-     * @apiErrorExample Error-Response:
-     *     HTTP/1.1 401 Unauthorized
-     *     {
-     *       "message": "Unauthorized"
-     *     }
+     * @apiErrorExample Error-Response: HTTP/1.1 401 Unauthorized { "message": "Unauthorized" }
      */
     @Reference(version = "${wxshop.orderservice.version}")
     OrderRpcService orderService;
@@ -170,15 +119,15 @@ public class AuthController {
      * @return 登录状态
      */
     @GetMapping("/status")
-    public Object loginStatus(){
-        if (UserContext.getCurrentUser()==null){
+    public Object loginStatus() {
+        if (UserContext.getCurrentUser() == null) {
             return LoginResponse.notLogin();
-        }else {
+        } else {
             return LoginResponse.login(UserContext.getCurrentUser());
         }
     }
 
-    public static class TelAndCode{
+    public static class TelAndCode {
         private String tel;
         private String code;
 
@@ -187,7 +136,7 @@ public class AuthController {
             this.code = code;
         }
 
-        //手机号即用户名
+        // 手机号即用户名
         public String getTel() {
             return tel;
         }
@@ -196,7 +145,7 @@ public class AuthController {
             this.tel = tel;
         }
 
-        //code即密码
+        // code即密码
         public String getCode() {
             return code;
         }

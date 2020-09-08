@@ -18,7 +18,6 @@ public class GoodsService {
     private GoodsMapper goodsMapper;
     private ShopMapper shopMapper;
 
-
     public GoodsService(GoodsMapper goodsMapper, ShopMapper shopMapper) {
         this.goodsMapper = goodsMapper;
         this.shopMapper = shopMapper;
@@ -68,7 +67,8 @@ public class GoodsService {
         }
         Shop shop = shopMapper.selectByPrimaryKey(goods.getShopId());
 
-        if (shop != null && Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+        if (shop != null
+                && Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
             goods.setStatus(DataStatus.DELETED.getName());
             goodsMapper.updateByPrimaryKey(goods);
             return goods;
@@ -78,12 +78,10 @@ public class GoodsService {
     }
 
     public PageResponse<Goods> getGoods(Integer pageNum, Integer pageSize, Long shopId) {
-        //知道有多少个元素
-        //而后才知道有多少页
-        //而后才可以分页
 
         int totalNumber = countGoods(shopId);
-        int totalPage = totalNumber % pageSize == 0 ? totalNumber / pageSize : totalNumber / pageSize + 1;
+        int totalPage =
+                totalNumber % pageSize == 0 ? totalNumber / pageSize : totalNumber / pageSize + 1;
 
         GoodsExample page = new GoodsExample();
         page.setLimit(pageSize);
@@ -106,7 +104,8 @@ public class GoodsService {
             return (int) goodsMapper.countByExample(goodsExample);
         } else {
             GoodsExample goodsExample = new GoodsExample();
-            goodsExample.createCriteria()
+            goodsExample
+                    .createCriteria()
                     .andStatusEqualTo(DataStatus.OK.getName())
                     .andShopIdEqualTo(shopId);
             return (int) goodsMapper.countByExample(goodsExample);
@@ -122,8 +121,7 @@ public class GoodsService {
 
     public Goods getGoodsById(long shopId) {
         GoodsExample okStatus = new GoodsExample();
-        okStatus.createCriteria().andIdEqualTo(shopId)
-                .andStatusEqualTo(DataStatus.OK.name());
+        okStatus.createCriteria().andIdEqualTo(shopId).andStatusEqualTo(DataStatus.OK.name());
         List<Goods> goods = goodsMapper.selectByExampleWithBLOBs(okStatus);
         if (goods.isEmpty()) {
             throw HttpException.notFound("商品未找到：" + shopId);
@@ -131,4 +129,3 @@ public class GoodsService {
         return goods.get(0);
     }
 }
-

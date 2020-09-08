@@ -10,5 +10,4 @@ public class WxshopApplication {
     public static void main(String[] args) {
         SpringApplication.run(WxshopApplication.class, args);
     }
-
 }

@@ -1,6 +1,5 @@
 package com.github.wxshop.service;
 
-
 import com.github.api.DataStatus;
 import com.github.api.data.PageResponse;
 import com.github.api.exceptions.HttpException;
@@ -36,7 +35,7 @@ class GoodsServiceTest {
     @Mock
     private Goods goods;
 
-    //GoodsService将依赖于上面两个对象goodsMapper和shopMapper
+    // GoodsService将依赖于上面两个对象goodsMapper和shopMapper
     @InjectMocks
     private GoodsService goodsService;
 
@@ -46,7 +45,7 @@ class GoodsServiceTest {
         user.setId(1L);
         UserContext.setCurrentUser(user);
 
-        //lenient 宽容的
+        // lenient 宽容的
         Mockito.lenient().when(shopMapper.selectByPrimaryKey(Mockito.anyLong())).thenReturn(shop);
     }
 
@@ -55,29 +54,27 @@ class GoodsServiceTest {
         UserContext.setCurrentUser(null);
     }
 
-
-    //写单元测试的时候,需要注意此时是没有数据库的
     @Test
     public void createGoodsSucceedIfUserIsOwner() {
-        //当调用selectByPrimaryKey方法的时候应该返回一个模拟的东西
-//        Mockito.when(shopMapper.selectByPrimaryKey(Mockito.anyLong())).thenReturn(shop);
+        // 当调用selectByPrimaryKey方法的时候应该返回一个模拟的东西
         Mockito.when(shop.getOwnerUserId()).thenReturn(1L);
         Mockito.when(goodsMapper.insert(goods)).thenReturn(123);
 
         Assertions.assertEquals(goods, goodsService.createGoods(goods));
         Mockito.verify(goods).setId(123L);
-
     }
 
     @Test
     public void createGoodsFailedIfUserIsNotOwner() {
 
-        //上面是1为正确的，这里写2为不正确的
         Mockito.when(shop.getOwnerUserId()).thenReturn(2L);
 
-        HttpException throwException = Assertions.assertThrows(HttpException.class, () -> {
-            goodsService.createGoods(goods);
-        });
+        HttpException throwException =
+                Assertions.assertThrows(
+                        HttpException.class,
+                        () -> {
+                            goodsService.createGoods(goods);
+                        });
 
         Assertions.assertEquals(403, throwException.getStatusCode());
     }
@@ -86,30 +83,31 @@ class GoodsServiceTest {
     void throwExceptionIfGoodsNotFound() {
         long goodsToBeDeleted = 123;
 
-//        Mockito.when(shop.getOwnerUserId()).thenReturn(1L);
         Mockito.when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(null);
-        HttpException thrownException = Assertions.assertThrows(HttpException.class, () -> {
-            goodsService.deleteGoodsById(goodsToBeDeleted);
-        });
+        HttpException thrownException =
+                Assertions.assertThrows(
+                        HttpException.class,
+                        () -> {
+                            goodsService.deleteGoodsById(goodsToBeDeleted);
+                        });
 
         Assertions.assertEquals(404, thrownException.getStatusCode());
-
     }
-
 
     @Test
     void deleteGoodsThrowExceptionIfUserIsNotOwner() {
         long goodsToBeDeleted = 123;
-        //类比 createGoodsFailedIfUserIsNotOwner
+        // 类比 createGoodsFailedIfUserIsNotOwner
         Mockito.when(shop.getOwnerUserId()).thenReturn(2L);
-        //下面这一行有的话会报错,多余
         Mockito.when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(goods);
-        HttpException thrownException = Assertions.assertThrows(HttpException.class, () -> {
-            goodsService.deleteGoodsById(goodsToBeDeleted);
-        });
+        HttpException thrownException =
+                Assertions.assertThrows(
+                        HttpException.class,
+                        () -> {
+                            goodsService.deleteGoodsById(goodsToBeDeleted);
+                        });
 
         Assertions.assertEquals(403, thrownException.getStatusCode());
-
     }
 
     @Test
@@ -122,7 +120,6 @@ class GoodsServiceTest {
         goodsService.deleteGoodsById(goodsToBeDeleted);
 
         Mockito.verify(goods).setStatus(DataStatus.DELETED.getName());
-
     }
 
     @Test
@@ -130,7 +127,7 @@ class GoodsServiceTest {
         int pageNumber = 5;
         int pageSize = 10;
 
-        //假设返回55
+        // 假设返回55
         Mockito.when(goodsMapper.countByExample(any())).thenReturn(55L);
         PageResponse<Goods> result = goodsService.getGoods(pageNumber, pageSize, null);
         Assertions.assertEquals(6, result.getTotalPage());
@@ -156,5 +153,4 @@ class GoodsServiceTest {
         assertEquals(10, result.getPageSize());
         assertEquals(mockData, result.getData());
     }
-
 }

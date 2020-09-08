@@ -1,6 +1,6 @@
 package com.github.wxshop.entity;
 
-public class Response<T> { //这里建议写成泛型的,因为后面还有不同的响应值
+public class Response<T> { // 这里建议写成泛型的,因为后面还有不同的响应值
     private T data;
     private String message;
 

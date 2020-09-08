@@ -1,12 +1,11 @@
 package com.github.wxshop.generate;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 class GoodsTest {
-    ObjectMapper objectMapper =  new ObjectMapper();
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void serializationDeserializationTest() throws JsonProcessingException {
@@ -19,11 +18,9 @@ class GoodsTest {
         goods.setStock(10);
         goods.setShopId(1L);
 
-        //writeValueAsString : goods序列化成 字符串
+        // writeValueAsString : goods序列化成 字符串
         String value = objectMapper.writeValueAsString(goods);
-        //readValue:deserialize
-        objectMapper.readValue(value,Goods.class);
-
+        // readValue:deserialize
+        objectMapper.readValue(value, Goods.class);
     }
-
 }

@@ -18,19 +18,19 @@ public class ShiroRealm extends AuthorizingRealm {
     @Autowired
     public ShiroRealm(VerificationCodeCheckService verificationCodeCheckService) {
         this.verificationCodeCheckService = verificationCodeCheckService;
-        //token:企图提交的身份信息,info:实际的信息
-        this.setCredentialsMatcher((token, info) -> new String((char[]) token.getCredentials()).equals(info.getCredentials()));
-
+        this.setCredentialsMatcher(
+                (token, info) -> new String((char[]) token.getCredentials()).equals(info.getCredentials()));
     }
 
-    @Override//Authorization:你有没权限访问这个资源
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         return null;
     }
 
-    @Override//Authentication:验证这个人是不是你自己
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        String tel = (String) token.getPrincipal(); //获取用户名
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
+            throws AuthenticationException {
+        String tel = (String) token.getPrincipal();
 
         String correctCode = verificationCodeCheckService.getCorrectCode(tel);
 

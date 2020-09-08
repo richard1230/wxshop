@@ -5,11 +5,11 @@ import com.github.api.data.GoodsInfo;
 import com.github.api.data.OrderInfo;
 import com.github.api.data.PageResponse;
 import com.github.api.data.RpcOrderGoods;
+import com.github.api.exceptions.HttpException;
 import com.github.api.generate.Order;
 import com.github.api.rpc.OrderRpcService;
 import com.github.wxshop.dao.GoodsStockMapper;
 import com.github.wxshop.entity.GoodsWithNumber;
-import com.github.api.exceptions.HttpException;
 import com.github.wxshop.entity.OrderResponse;
 import com.github.wxshop.generate.Goods;
 import com.github.wxshop.generate.Shop;
@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class OrderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+
     @Reference(version = "${wxshop.orderservice.version}")
     private OrderRpcService orderRpcService;
 
@@ -43,12 +44,12 @@ public class OrderService {
 
     private ShopMapper shopMapper;
 
-
     @Autowired
-    public OrderService(UserMapper userMapper,
-                        GoodsStockMapper goodsStockMapper,
-                        GoodsService goodsService,
-                        ShopMapper shopMapper) {
+    public OrderService(
+            UserMapper userMapper,
+            GoodsStockMapper goodsStockMapper,
+            GoodsService goodsService,
+            ShopMapper shopMapper) {
         this.userMapper = userMapper;
         this.goodsStockMapper = goodsStockMapper;
         this.goodsService = goodsService;
@@ -61,21 +62,18 @@ public class OrderService {
         return generateResponse(createOrder, idToGoodsMap, orderInfo.getGoods());
     }
 
-    private OrderResponse generateResponse(Order createOrder, Map<Long, Goods> idToGoodsMap, List<GoodsInfo> goodsInfo) {
+    private OrderResponse generateResponse(
+            Order createOrder, Map<Long, Goods> idToGoodsMap, List<GoodsInfo> goodsInfo) {
         OrderResponse response = new OrderResponse(createOrder);
         Long shopId = new ArrayList<>(idToGoodsMap.values()).get(0).getShopId();
         response.setShop(shopMapper.selectByPrimaryKey(shopId));
         response.setGoods(
-                goodsInfo
-                        .stream()
-                        .map(goods -> toGoodsWithNumber(goods, idToGoodsMap))
-                        .collect(toList())
+                goodsInfo.stream().map(goods -> toGoodsWithNumber(goods, idToGoodsMap)).collect(toList()));
 
-        );
         return response;
     }
 
-    //Transactional两个坑:1.相对应方法为public
+    // Transactional两个坑:1.相对应方法为public
     // 2.只能是别人调用deductstock这个方法,this调用不行!!
     @Transactional
     public void deductStock(OrderInfo orderInfo) {
@@ -91,7 +89,6 @@ public class OrderService {
         GoodsWithNumber ret = new GoodsWithNumber(idToGoodsMap.get(goodsInfo.getId()));
         ret.setNumber(goodsInfo.getNumber());
         return ret;
-
     }
 
     private Order createOrderViaRpc(OrderInfo orderInfo, Long userId, Map<Long, Goods> idToGoodsMap) {
@@ -99,9 +96,10 @@ public class OrderService {
         order.setUserId(userId);
         order.setShopId(new ArrayList<>(idToGoodsMap.values()).get(0).getShopId());
         order.setStatus(DataStatus.PENDING.getName());
-        String address = orderInfo.getAddress() == null ?
-                userMapper.selectByPrimaryKey(userId).getAddress() :
-                orderInfo.getAddress();
+        String address =
+                orderInfo.getAddress() == null
+                        ? userMapper.selectByPrimaryKey(userId).getAddress()
+                        : orderInfo.getAddress();
 
         order.setAddress(address);
         order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
@@ -130,10 +128,7 @@ public class OrderService {
         if (goodsInfo.isEmpty()) {
             return Collections.emptyMap();
         }
-        List<Long> goodsId = goodsInfo
-                .stream()
-                .map(GoodsInfo::getId)
-                .collect(toList());
+        List<Long> goodsId = goodsInfo.stream().map(GoodsInfo::getId).collect(toList());
         return goodsService.getIdToGoodsMap(goodsId);
     }
 
@@ -141,32 +136,30 @@ public class OrderService {
         return toOrderResponse(orderRpcService.deleteOrder(orderId, userId));
     }
 
-    public PageResponse<OrderResponse> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
-        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId, pageNum, pageSize, status);
+    public PageResponse<OrderResponse> getOrder(
+            long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+        PageResponse<RpcOrderGoods> rpcOrderGoods =
+                orderRpcService.getOrder(userId, pageNum, pageSize, status);
 
-        List<GoodsInfo> goodIds = rpcOrderGoods
-                .getData()
-                .stream()
-                .map(RpcOrderGoods::getGoods)
-                .flatMap(List::stream)
-                .collect(toList());
+        List<GoodsInfo> goodIds =
+                rpcOrderGoods.getData().stream()
+                        .map(RpcOrderGoods::getGoods)
+                        .flatMap(List::stream)
+                        .collect(toList());
 
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(goodIds);
 
-        List<OrderResponse> orders = rpcOrderGoods.getData()
-                .stream()
-                .map(order -> generateResponse(order.getOrder(), idToGoodsMap, order.getGoods()))
-                .collect(toList());
-
+        List<OrderResponse> orders =
+                rpcOrderGoods.getData().stream()
+                        .map(order -> generateResponse(order.getOrder(), idToGoodsMap, order.getGoods()))
+                        .collect(toList());
 
         return PageResponse.pagedData(
                 rpcOrderGoods.getPageNum(),
                 rpcOrderGoods.getPageSize(),
                 rpcOrderGoods.getTotalPage(),
-                orders
-        );
+                orders);
     }
-
 
     public OrderResponse updateExpressInformation(Order order, long userId) {
         doGetOrderById(userId, order.getId());
@@ -212,6 +205,4 @@ public class OrderService {
         Map<Long, Goods> idToGoodsMap = getIdToGoodsMap(rpcOrderGoods.getGoods());
         return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
     }
-
-
 }

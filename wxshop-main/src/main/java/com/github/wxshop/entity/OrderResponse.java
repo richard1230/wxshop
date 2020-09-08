@@ -8,6 +8,7 @@ import java.util.List;
 public class OrderResponse extends Order {
     private Shop shop;
     private List<GoodsWithNumber> goods;
+
     public OrderResponse() {
     }
 
@@ -22,7 +23,6 @@ public class OrderResponse extends Order {
         this.setCreatedAt(order.getCreatedAt());
         this.setUpdatedAt(order.getUpdatedAt());
         this.setShopId(order.getShopId());
-
     }
 
     public Shop getShop() {

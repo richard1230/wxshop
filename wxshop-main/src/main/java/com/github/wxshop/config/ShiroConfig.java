@@ -42,56 +42,65 @@ public class ShiroConfig implements WebMvcConfigurer {
 
     @Value("${wxshop.redis.host}")
     String redisHost;
+
     @Value("${wxshop.redis.port}")
     int redisPort;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new HandlerInterceptor() {
+        registry.addInterceptor(
+                new HandlerInterceptor() {
 
-            private boolean isWhitelist(HttpServletRequest request) {
-                String uri = request.getRequestURI();
-                return Arrays.asList(
-                        "/api/v1/code",
-                        "/api/v1/login",
-                        "/api/v1/status",
-                        "/api/v1/logout",
-                        "/error",
-                        "/",
-                        "/index.html",
-                        "/manifest.json"
-                ).contains(uri) || uri.startsWith("/static/");
-            }
+                    private boolean isWhitelist(HttpServletRequest request) {
+                        String uri = request.getRequestURI();
+                        return Arrays.asList(
+                                "/api/v1/code",
+                                "/api/v1/login",
+                                "/api/v1/status",
+                                "/api/v1/logout",
+                                "/error",
+                                "/",
+                                "/index.html",
+                                "/manifest.json")
+                                .contains(uri)
+                                || uri.startsWith("/static/");
+                    }
 
+                    @Override
+                    public boolean preHandle(
+                            HttpServletRequest request, HttpServletResponse response, Object handler)
+                            throws Exception {
 
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                        if ("OPTIONS".equals(request.getMethod())) {
+                            response.setStatus(200);
+                            return false;
+                        }
 
-                if ("OPTIONS".equals(request.getMethod())) {
-                    response.setStatus(200);
-                    return false;
-                }
+                        Object tel = SecurityUtils.getSubject().getPrincipal();
+                        if (tel != null) {
+                            userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
+                        }
 
-                Object tel = SecurityUtils.getSubject().getPrincipal();
-                if (tel != null) {
-                    userService.getUserByTel(tel.toString()).ifPresent(UserContext::setCurrentUser);
-                }
+                        if (isWhitelist(request)) {
+                            return true;
+                        } else if (UserContext.getCurrentUser() == null) {
+                            response.setStatus(401);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
 
-                if (isWhitelist(request)) {
-                    return true;
-                } else if (UserContext.getCurrentUser() == null) {
-                    response.setStatus(401);
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-            @Override
-            public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-                UserContext.clearCurrentUser();
-            }
-        });
+                    @Override
+                    public void afterCompletion(
+                            HttpServletRequest request,
+                            HttpServletResponse response,
+                            Object handler,
+                            Exception ex)
+                            throws Exception {
+                        UserContext.clearCurrentUser();
+                    }
+                });
     }
 
     @Bean
@@ -99,9 +108,9 @@ public class ShiroConfig implements WebMvcConfigurer {
         return new DataSourceTransactionManager(dataSource);
     }
 
-
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {//这里爆红是因为这里是注入,这种行为是运行时行为 ,IDEA对于这种检测不是100%准确
+    public ShiroFilterFactoryBean shiroFilter(
+            SecurityManager securityManager) { // 这里爆红是因为这里是注入,这种行为是运行时行为 ,IDEA对于这种检测不是100%准确
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         return shiroFilterFactoryBean;
@@ -112,7 +121,7 @@ public class ShiroConfig implements WebMvcConfigurer {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         securityManager.setRealm(shiroRealm);
-        securityManager.setCacheManager(cacheManager); //内存受限制的缓存管理===>cacheManager
+        securityManager.setCacheManager(cacheManager); // 内存受限制的缓存管理===>cacheManager
         securityManager.setSessionManager(new DefaultWebSessionManager());
         securityManager.setRememberMeManager(rememberMeManager());
         SecurityUtils.setSecurityManager(securityManager);
@@ -124,7 +133,10 @@ public class ShiroConfig implements WebMvcConfigurer {
         cookie.setMaxAge(EXPIRY_TIME);
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
         cookieRememberMeManager.setCookie(cookie);
-        cookieRememberMeManager.setCipherKey(Base64.decode("3AvVhmFLUs0KTA3KaTHGFg=="));  // RememberMe cookie encryption key default AES algorithm of key length (128, 256, 512)
+        cookieRememberMeManager.setCipherKey(
+                Base64.decode(
+                        "3AvVhmFLUs0KTA3KaTHGFg==")); // RememberMe cookie encryption key default AES algorithm
+        // of key length (128, 256, 512)
         return cookieRememberMeManager;
     }
 
@@ -142,4 +154,3 @@ public class ShiroConfig implements WebMvcConfigurer {
         return new ShiroRealm(verificationCodeCheckService);
     }
 }
-

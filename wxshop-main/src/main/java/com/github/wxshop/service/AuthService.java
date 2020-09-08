@@ -1,6 +1,5 @@
 package com.github.wxshop.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +11,10 @@ public class AuthService {
     private final SmsCodeService smsCodeService;
 
     @Autowired
-    public AuthService(UserService userService,
-                       VerificationCodeCheckService verificationCodeCheckService,
-                       SmsCodeService smsCodeService) {
+    public AuthService(
+            UserService userService,
+            VerificationCodeCheckService verificationCodeCheckService,
+            SmsCodeService smsCodeService) {
         this.userService = userService;
         this.verificationCodeCheckService = verificationCodeCheckService;
         this.smsCodeService = smsCodeService;
@@ -25,6 +25,5 @@ public class AuthService {
         userService.createUserIfNotExist(tel);
         String correctCode = smsCodeService.sendSmsCode(tel);
         verificationCodeCheckService.addCode(tel, correctCode);
-
     }
 }

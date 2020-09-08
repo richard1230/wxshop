@@ -8,6 +8,7 @@ import java.util.List;
 public class ShoppingCartData {
     @JsonProperty("shop")
     private Shop shop;
+
     @JsonProperty("goods")
     private List<GoodsWithNumber> goods;
 

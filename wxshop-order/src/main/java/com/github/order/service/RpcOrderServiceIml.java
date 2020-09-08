@@ -37,9 +37,10 @@ public class RpcOrderServiceIml implements OrderRpcService {
 
     private OrderGoodsMapper orderGoodsMapper;
 
-    //这种写法是为了保证在单元测试里面也能用RpcOrderServiceIml
+    // 这种写法是为了保证在单元测试里面也能用RpcOrderServiceIml
     @Autowired
-    public RpcOrderServiceIml(OrderMapper orderMapper, MyOrderMapper myOrderMapper, OrderGoodsMapper orderGoodsMapper) {
+    public RpcOrderServiceIml(
+            OrderMapper orderMapper, MyOrderMapper myOrderMapper, OrderGoodsMapper orderGoodsMapper) {
         this.orderMapper = orderMapper;
         this.myOrderMapper = myOrderMapper;
         this.orderGoodsMapper = orderGoodsMapper;
@@ -69,10 +70,10 @@ public class RpcOrderServiceIml implements OrderRpcService {
     @Override
     public RpcOrderGoods deleteOrder(long orderId, long userId) {
         Order order = orderMapper.selectByPrimaryKey(orderId);
-        if (order == null){
-            throw HttpException.notFound("订单未找到："+orderId);
+        if (order == null) {
+            throw HttpException.notFound("订单未找到：" + orderId);
         }
-        if (order.getUserId() != userId){
+        if (order.getUserId() != userId) {
             throw HttpException.forbidden("无权访问！");
         }
         List<GoodsInfo> goodsInfo = myOrderMapper.getGoodsInfoOfOrder(orderId);
@@ -87,9 +88,9 @@ public class RpcOrderServiceIml implements OrderRpcService {
         return result;
     }
 
-
     @Override
-    public PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+    public PageResponse<RpcOrderGoods> getOrder(
+            long userId, Integer pageNum, Integer pageSize, DataStatus status) {
         OrderExample countByStatus = new OrderExample();
         setStatus(countByStatus, status).andUserIdEqualTo(userId);
         int count = (int) orderMapper.countByExample(countByStatus);
@@ -97,7 +98,7 @@ public class RpcOrderServiceIml implements OrderRpcService {
         OrderExample pagedOrder = new OrderExample();
         pagedOrder.setOffset((pageNum - 1) * pageSize);
         pagedOrder.setLimit(pageNum);
-        setStatus(pagedOrder,status).andUserIdEqualTo(userId);
+        setStatus(pagedOrder, status).andUserIdEqualTo(userId);
 
         List<Order> orders = orderMapper.selectByExample(pagedOrder);
 
@@ -105,17 +106,12 @@ public class RpcOrderServiceIml implements OrderRpcService {
 
         int totalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
 
-        Map<Long,List<OrderGoods>> orderIdToGoodsMap = orderGoods
-                .stream()
-                .collect(Collectors.groupingBy(OrderGoods::getOrderId,toList()));
+        Map<Long, List<OrderGoods>> orderIdToGoodsMap =
+                orderGoods.stream().collect(Collectors.groupingBy(OrderGoods::getOrderId, toList()));
 
-        List<RpcOrderGoods> rpcOrderGoods = orders.stream()
-                .map(order -> toRpcOrderGoods(order,orderIdToGoodsMap))
-                .collect(toList());
-        return PageResponse.pagedData(pageNum,
-                pageSize,
-                totalPage,
-                rpcOrderGoods);
+        List<RpcOrderGoods> rpcOrderGoods =
+                orders.stream().map(order -> toRpcOrderGoods(order, orderIdToGoodsMap)).collect(toList());
+        return PageResponse.pagedData(pageNum, pageSize, totalPage, rpcOrderGoods);
     }
 
     private List<OrderGoods> getOrderGoods(List<Order> orders) {
@@ -138,14 +134,14 @@ public class RpcOrderServiceIml implements OrderRpcService {
         }
     }
 
-    private RpcOrderGoods toRpcOrderGoods(Order order, Map<Long, List<OrderGoods>> orderIdToGoodsMap) {
+    private RpcOrderGoods toRpcOrderGoods(
+            Order order, Map<Long, List<OrderGoods>> orderIdToGoodsMap) {
         RpcOrderGoods result = new RpcOrderGoods();
         result.setOrder(order);
-        List<GoodsInfo> goodsInfos = orderIdToGoodsMap
-                .getOrDefault(order.getId(), Collections.emptyList())
-                .stream()
-                .map(this::toGoodsInfo)
-                .collect(toList());
+        List<GoodsInfo> goodsInfos =
+                orderIdToGoodsMap.getOrDefault(order.getId(), Collections.emptyList()).stream()
+                        .map(this::toGoodsInfo)
+                        .collect(toList());
         result.setGoods(goodsInfos);
         return result;
     }
@@ -171,9 +167,11 @@ public class RpcOrderServiceIml implements OrderRpcService {
     private void insertOrder(Order order) {
         order.setStatus(PENDING.getName());
         // 将原来重复的if-else变成了下面的函数式编程，提取了一个公用方法verify
-        verify(()->order.getUserId()==null,"userId不能为空");
-        verify(()->order.getTotalPrice()==null || order.getTotalPrice().doubleValue() < 0,"totalPrice非法！");
-        verify(()->order.getAddress()==null,"address不能为空");
+        verify(() -> order.getUserId() == null, "userId不能为空");
+        verify(
+                () -> order.getTotalPrice() == null || order.getTotalPrice().doubleValue() < 0,
+                "totalPrice非法！");
+        verify(() -> order.getAddress() == null, "address不能为空");
 
         order.setExpressCompany(null);
         order.setExpressId(null);
@@ -183,8 +181,8 @@ public class RpcOrderServiceIml implements OrderRpcService {
         orderMapper.insert(order);
     }
 
-    private void verify(BooleanSupplier supplier,String message) {
-        if (supplier.getAsBoolean()){
+    private void verify(BooleanSupplier supplier, String message) {
+        if (supplier.getAsBoolean()) {
             throw new IllegalArgumentException(message);
         }
     }
