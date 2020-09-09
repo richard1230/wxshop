@@ -78,7 +78,6 @@ public class ShoppingCartController {
 
     // shoppingart接口接受到的json数据
     public static class AddToShoppingCartItem {
-        // long类型的
         long id;
         int number;
 

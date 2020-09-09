@@ -110,7 +110,7 @@ public class ShiroConfig implements WebMvcConfigurer {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(
-            SecurityManager securityManager) { // 这里爆红是因为这里是注入,这种行为是运行时行为 ,IDEA对于这种检测不是100%准确
+            SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         return shiroFilterFactoryBean;
@@ -121,7 +121,7 @@ public class ShiroConfig implements WebMvcConfigurer {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         securityManager.setRealm(shiroRealm);
-        securityManager.setCacheManager(cacheManager); // 内存受限制的缓存管理===>cacheManager
+        securityManager.setCacheManager(cacheManager);
         securityManager.setSessionManager(new DefaultWebSessionManager());
         securityManager.setRememberMeManager(rememberMeManager());
         SecurityUtils.setSecurityManager(securityManager);
